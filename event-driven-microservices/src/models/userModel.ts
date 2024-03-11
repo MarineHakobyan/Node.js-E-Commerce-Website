@@ -1,23 +1,22 @@
-import { UserEntity } from '../orm/entities/userEntity';
-import { findUserById } from '../services/authService';
+import { Entity, PrimaryGeneratedColumn, Column, BeforeInsert } from 'typeorm';
+import {hashPassword} from "../utils/authUtils";
 
-export async function registerUser(data: any): Promise<UserEntity> {
-    // Your registration logic here, e.g., create and save user to the database
-    // Don't forget to call user.save() in your actual implementation
-    const user = new UserEntity();
-    user.username = data.username;
-    user.email = data.email;
-    user.password = data.password;
-    return user;
-}
+@Entity('users')
+export class UserEntity {
+    @PrimaryGeneratedColumn()
+    id: number;
 
-export async function loginUser(username: string, password: string): Promise<UserEntity | null> {
-    // Your login logic here, e.g., find user by username in the database
-    const user = await findUserById(username);
+    @Column({ unique: true })
+    username: string;
 
-    if (user && await user.validatePassword(password)) {
-        return user;
+    @Column()
+    email: string;
+
+    @Column()
+    password: string;
+
+    @BeforeInsert()
+    async hashPasswordBeforeInsert() {
+        this.password = await hashPassword(this.password);
     }
-
-    return null;
 }

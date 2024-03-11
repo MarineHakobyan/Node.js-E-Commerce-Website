@@ -1,5 +1,6 @@
 import {DataSourceOptions } from 'typeorm';
 
+
 const ormConfig: DataSourceOptions = {
   type: 'postgres',
   host: process.env.DB_HOST || 'localhost',

@@ -1,13 +1,33 @@
-import bcrypt from 'bcrypt';
+import * as jwt from 'jsonwebtoken';
+import * as bcrypt from 'bcrypt';
+import { appConfig } from '../config/appConfig';
 
 export async function hashPassword(password: string): Promise<string> {
     const saltRounds = 10;
-    return await bcrypt.hash(password, saltRounds);
+    try {
+        return await bcrypt.hash(password, saltRounds);
+    } catch (error) {
+        throw new Error('Password hashing failed');
+    }
 }
 
-export async function generateTokenn(user: any): Promise<string> {
+export async function generateToken(user: any): Promise<string> {
+    try {
+        const payload = {
+            userId: user.id,
+            username: user.username,
+            email: user.email,
+        };
+        return jwt.sign(payload, appConfig.secret, { expiresIn: '1h' });
+    } catch (error) {
+        throw new Error('Token generation failed');
+    }
 }
 
 export async function comparePassword(candidatePassword: string, hashedPassword: string): Promise<boolean> {
-    return await bcrypt.compare(candidatePassword, hashedPassword);
+    try {
+        return await bcrypt.compare(candidatePassword, hashedPassword);
+    } catch (error) {
+        throw new Error('Password comparison failed');
+    }
 }

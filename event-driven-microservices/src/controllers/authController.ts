@@ -1,24 +1,17 @@
 import { Request, Response } from 'express';
 import { registerUser, loginUser } from '../services/authService';
-import { generateToken, hashPassword } from '../utils/authUtils';
-import Joi from 'joi';
+import { validateRegistration, validateLogin } from '../validators/authValidator';
 
-export async function register(req: Request, res: Response): Promise<void> {
+async function register(req: Request, res: Response): Promise<void> {
   try {
-    const registrationSchema = Joi.object({
-      username: Joi.string().required(),
-      email: Joi.string().email().required(),
-      password: Joi.string().required(),
-    });
-
-    const { error, value } = registrationSchema.validate(req.body);
+    const { error, value } = await validateRegistration(req.body);
     if (error) {
       return res.status(400).json({ message: error.details[0].message });
     }
 
     const user = await registerUser({
       ...value,
-      password: await hashPassword(value.password),
+      password: await hashPassword(value.password), // Hash password before saving
     });
 
     res.status(201).json(user);
@@ -28,14 +21,9 @@ export async function register(req: Request, res: Response): Promise<void> {
   }
 }
 
-export async function login(req: Request, res: Response): Promise<void> {
+async function login(req: Request, res: Response): Promise<void> {
   try {
-    const loginSchema = Joi.object({
-      username: Joi.string().required(),
-      password: Joi.string().required(),
-    });
-
-    const { error, value } = loginSchema.validate(req.body);
+    const { error, value } = await validateLogin(req.body);
     if (error) {
       return res.status(400).json({ message: error.details[0].message });
     }
@@ -44,8 +32,7 @@ export async function login(req: Request, res: Response): Promise<void> {
     const user = await loginUser(username, password);
 
     if (user) {
-      const token = generateToken(user);
-      // Set token in headers or cookie for the client to use
+      const token = generateToken(user); // Implement token generation
       res.status(200).json({ message: 'Login successful', token });
     } else {
       res.status(401).json({ message: 'Invalid credentials' });
@@ -55,3 +42,5 @@ export async function login(req: Request, res: Response): Promise<void> {
     res.status(500).json({ message: 'Login failed' });
   }
 }
+
+export { register, login };
