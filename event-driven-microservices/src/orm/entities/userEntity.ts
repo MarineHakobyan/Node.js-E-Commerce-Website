@@ -1,5 +1,7 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, BeforeInsert } from 'typeorm';
+import { hashPassword, comparePassword } from '../../utils/authUtils';
 
+@Entity('users')
 export class UserEntity {
     @PrimaryGeneratedColumn()
     id: number;
@@ -13,5 +15,12 @@ export class UserEntity {
     @Column()
     password: string;
 
-    // ... other properties and methods
+    @BeforeInsert()
+    async hashPasswordBeforeInsert() {
+        this.password = await hashPassword(this.password);
+    }
+
+    async validatePassword(candidatePassword: string): Promise<boolean> {
+        return await comparePassword(candidatePassword, this.password);
+    }
 }
