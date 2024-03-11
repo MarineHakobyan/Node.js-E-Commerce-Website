@@ -1,6 +1,6 @@
-import { DataSourceOptions } from 'typeorm';
+import {DataSourceOptions} from "typeorm/data-source/DataSourceOptions";
 
-const ormConfig: DataSourceOptions = {
+export const datasourceOptions: DataSourceOptions = {
   type: process.env.DB_TYPE as any,
   host: process.env.DB_HOST || 'localhost',
   port: Number(process.env.DB_PORT) || 5432,
@@ -12,7 +12,6 @@ const ormConfig: DataSourceOptions = {
   subscribers: [],
   migrations: [`./src/orm/seeds/dev/**/*.seed{.ts,.js}`],
   entities: [`./src/orm/entities/**/*.entity{.ts,.js}`],
-  migrationsTableName: "migrations",
 };
 
-export default ormConfig;
+export default datasourceOptions
