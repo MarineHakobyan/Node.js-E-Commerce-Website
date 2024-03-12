@@ -1,5 +1,6 @@
-import {Entity, PrimaryGeneratedColumn, Column, BeforeInsert, OneToMany} from 'typeorm';
-import { hashPassword, comparePassword } from '../../utils/authUtils';
+import { Entity, PrimaryGeneratedColumn, Column, BeforeInsert, OneToMany } from 'typeorm';
+import { hashPassword, comparePassword } from '../../utils/authUtils'; // Assuming authUtils for password hashing/comparison
+import { ProductEntity } from './productEntity'; // Assuming productEntity.ts exists in the same directory
 
 @Entity('users')
 export class UserEntity {
@@ -13,17 +14,17 @@ export class UserEntity {
     email: string;
 
     @Column()
-    password: string;
+    password: string; // Store hashed password
 
-    @OneToMany(type => Product, product => product.user) // Define a one-to-many relationship with Product
-    products?: Product[] | null;
+    @OneToMany(type => ProductEntity, product => product.user)
+    products?: ProductEntity[] | null; // One-to-Many relationship with products
 
     @BeforeInsert()
     async hashPasswordBeforeInsert() {
-        this.password = await hashPassword(this.password);
+        this.password = await hashPassword(this.password); // Hash password before saving
     }
 
     async validatePassword(candidatePassword: string): Promise<boolean> {
-        return await comparePassword(candidatePassword, this.password);
+        return await comparePassword(candidatePassword, this.password); // Validate password during login etc.
     }
 }

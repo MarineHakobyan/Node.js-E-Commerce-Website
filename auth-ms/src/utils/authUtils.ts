@@ -1,6 +1,7 @@
 import * as jwt from 'jsonwebtoken';
 import * as bcrypt from 'bcrypt';
-import { config } from '../config/config';
+
+import { appConfig } from '../config/appConfig';
 
 export async function hashPassword(password: string): Promise<string> {
   const saltRounds = 10;
@@ -18,7 +19,7 @@ export async function generateToken(user: any): Promise<string> {
       username: user.username,
       email: user.email,
     };
-    return jwt.sign(payload, config.secret, { expiresIn: '1h' });
+    return jwt.sign(payload, appConfig.secret, { expiresIn: '1h' });
   } catch (error) {
     throw new Error('Token generation failed');
   }

@@ -1,19 +1,28 @@
 import express from 'express';
+import { getRepository } from 'typeorm';
 import { ProductEntity } from '../orm/entities/productEntity';
 
 const router = express.Router();
 
 router.put('/products/:productId', async (req, res) => {
   const { productId } = req.params;
-  const updatedProduct = await ProductEntity.update(productId, req.body);
+  const productRepository = getRepository(ProductEntity);
 
-  if (updatedProduct.affected > 0) {
-    const product = await ProductEntity.findOne(productId, {
+  try {
+    await productRepository.update(productId, req.body);
+
+    const product = await productRepository.findOne(productId, {
       relations: ['user'],
     });
-    res.json(product);
-  } else {
-    res.json({ message: 'Product not found or could not be updated' });
+
+    if (product) {
+      res.json(product);
+    } else {
+      res.status(404).json({ message: 'Product not found' });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error updating product' });
   }
 });
 

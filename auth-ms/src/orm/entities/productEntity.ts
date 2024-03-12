@@ -1,5 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 import {UserEntity} from "./userEntity";
+import {Column, Entity, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
 
 @Entity()
 export class ProductEntity {
@@ -9,6 +9,6 @@ export class ProductEntity {
     @Column()
     name: string;
 
-    @ManyToOne(type => UserEntity, user => user.products)
-    user?: UserEntity;
+    @ManyToOne(type => UserEntity, user => user.products) // ManyToOne relationship with user
+    user: UserEntity;
 }

@@ -8,7 +8,6 @@ import {createProductRouter} from "./routes/createProduct";
 import {fetchProductsRouter} from "./routes/fetchProducts";
 import {updateProductRouter} from "./routes/updateProduct";
 import {deleteProductRouter} from "./routes/deleteProduct";
-import {ormConfig} from "./config/config";
 
 
 const app = express();
