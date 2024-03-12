@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, BeforeInsert } from 'typeorm';
+import {Entity, PrimaryGeneratedColumn, Column, BeforeInsert, OneToMany} from 'typeorm';
 import { hashPassword, comparePassword } from '../../utils/authUtils';
 
 @Entity('users')
@@ -14,6 +14,9 @@ export class UserEntity {
 
     @Column()
     password: string;
+
+    @OneToMany(type => Product, product => product.user) // Define a one-to-many relationship with Product
+    products?: Product[] | null;
 
     @BeforeInsert()
     async hashPasswordBeforeInsert() {

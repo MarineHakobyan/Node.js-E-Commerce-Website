@@ -11,7 +11,7 @@
     "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
     "migration:generate": "npm run typeorm -- migration:generate -c migration -n",
     "migration:create": "npm run typeorm -- migration:create -c migration -n",
-    "migration:run": "npm run typeorm -- migration:run  -d ormconfig.ts",
+    "migration:run": "npm run typeorm -- migration:run -c migration",
     "migration:revert": "npm run typeorm -- migration:revert -c migration"
   },
   "keywords": [],
@@ -24,8 +24,8 @@
     "joi": "^17.12.2",
     "lodash": "^4.17.21",
     "pg": "^8.11.3",
-    "typeorm": "^0.3.20",
-    "typeorm-naming-strategies": "^4.1.0"
+    "typeorm": "^0.2.41",
+    "typeorm-naming-strategies": "^2.0.0"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",

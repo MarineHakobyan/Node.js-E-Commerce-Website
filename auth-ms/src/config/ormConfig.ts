@@ -1,17 +1,17 @@
-import {DataSourceOptions} from "typeorm/data-source/DataSourceOptions";
+import { ConnectionOptions } from 'typeorm';
+import { env } from 'process';
 
-export const datasourceOptions: DataSourceOptions = {
-  type: process.env.DB_TYPE as any,
-  host: process.env.DB_HOST || 'localhost',
-  port: Number(process.env.DB_PORT) || 5432,
-  username: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-  synchronize: process.env.DB_ENV !== 'production',
-  logging: true,
-  subscribers: [],
-  migrations: [`./src/orm/seeds/dev/**/*.seed{.ts,.js}`],
+export const datasourceOptions: ConnectionOptions = {
+  type: env.DB_TYPE as any,
+  host: env.DB_HOST,
+  port: Number.parseInt(env.DB_PORT as string, 10),
+  database: env.DB_NAME,
+  username: env.DB_USER,
+  password: env.DB_PASSWORD,
+  synchronize: env.ORM_SYNCHRONIZE === 'true',
+  logging: env.ORM_LOGGING === 'true',
   entities: [`./src/orm/entities/**/*.entity{.ts,.js}`],
+  cli: {
+    migrationsDir: `./src/orm/seeds/dev`,
+  },
 };
-
-export default datasourceOptions

@@ -1,25 +1,43 @@
+import { createConnection } from 'typeorm';
 import express from 'express';
-import dotenv from 'dotenv';
-dotenv.config();
+import {createUserRouter} from "./routes/createUser";
+import {fetchUsersRouter} from "./routes/fetchUser";
+import {updateUserRouter} from "./routes/updateUser";
+import {deleteUserRouter} from "./routes/deleteUser";
+import {createProductRouter} from "./routes/createProduct";
+import {fetchProductsRouter} from "./routes/fetchProducts";
+import {updateProductRouter} from "./routes/updateProduct";
+import {deleteProductRouter} from "./routes/deleteProduct";
+import {ormConfig} from "./config/config";
 
-import authRouter from './routes/authRoute';
-import {AppDataSource} from "./common/datasource";
-import ormConfig from "./config/ormConfig";
 
 const app = express();
-app.use(express.json());
 
-async function connectDb() {
-    AppDataSource.initialize()
-        .then(() => {
-            console.log('Connected to database');
-        })
-        .catch((error) => console.error('Error connecting to database:', error))
-}
+const main = async () => {
+    try {
+        await createConnection(ormConfig);
+        console.log('Connected to database');
 
- connectDb()
+        app.use(express.json());
 
-app.use('/api/auth', authRouter);
+        // TODO: separate and extract
+        app.use(createUserRouter);
+        app.use(fetchUsersRouter);
+        app.use(updateUserRouter);
+        app.use(deleteUserRouter);
 
-app.listen(3000, () => console.log('Server listening on port 3000'));
+        app.use(createProductRouter);
+        app.use(fetchProductsRouter);
+        app.use(updateProductRouter);
+        app.use(deleteProductRouter);
 
+        app.listen(8080, () => {
+            console.log('Now running on port 8080');
+        });
+    } catch (error) {
+        console.error(error);
+        throw new Error('Unable to connect to db');
+    }
+};
+
+main();
