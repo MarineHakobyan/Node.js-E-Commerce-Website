@@ -1,42 +1,51 @@
+import {Request, Response} from "express-serve-static-core";
 import { createConnection } from 'typeorm';
-import express from 'express';
-import {createUserRouter} from "./routes/createUser";
-import {fetchUsersRouter} from "./routes/fetchUser";
-import {updateUserRouter} from "./routes/updateUser";
-import {deleteUserRouter} from "./routes/deleteUser";
-import {createProductRouter} from "./routes/createProduct";
-import {fetchProductsRouter} from "./routes/fetchProducts";
-import {updateProductRouter} from "./routes/updateProduct";
-import {deleteProductRouter} from "./routes/deleteProduct";
+import express, {NextFunction} from 'express';
+import dotenv from 'dotenv';
 
+dotenv.config()
+require('express-async-errors');
+
+import { ormConfig } from './config/ormConfig';
+import { appConfig } from './config/appConfig';
+import {
+    createProductRouter,
+    fetchProductsRouter,
+    updateProductRouter,
+    deleteProductRouter,
+    UserRouter,
+    AuthRouter
+} from './routes';
+
+dotenv.config();
 
 const app = express();
 
-const main = async () => {
-    try {
-        await createConnection(ormConfig);
-        console.log('Connected to database');
+app.use(express.json());
 
-        app.use(express.json());
-
-        // TODO: separate and extract
-        app.use(createUserRouter);
-        app.use(fetchUsersRouter);
-        app.use(updateUserRouter);
-        app.use(deleteUserRouter);
-
-        app.use(createProductRouter);
-        app.use(fetchProductsRouter);
-        app.use(updateProductRouter);
-        app.use(deleteProductRouter);
-
-        app.listen(8080, () => {
-            console.log('Now running on port 8080');
-        });
-    } catch (error) {
+createConnection(ormConfig)
+    .then(() => console.log('Connected to database'))
+    .catch((error) => {
         console.error(error);
-        throw new Error('Unable to connect to db');
-    }
-};
+        process.exit(1);
+    });
 
-main();
+app.use(UserRouter);
+app.use(AuthRouter);
+
+//: TODO: add to single router
+app.use(createProductRouter);
+app.use(fetchProductsRouter);
+app.use(updateProductRouter);
+app.use(deleteProductRouter);
+
+app.use((err:Error, req:Request, res: Response, next: NextFunction) => {
+    console.error(err);
+    res.status(500).send('Internal server error');
+
+    next(err);
+});
+
+app.listen(appConfig.port, () => {
+    console.log(`Now running on port ${appConfig.port}`);
+});

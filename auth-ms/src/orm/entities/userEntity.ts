@@ -14,7 +14,7 @@ export class UserEntity {
     email: string;
 
     @Column()
-    password: string; // Store hashed password
+    password: string;
 
     @OneToMany(type => ProductEntity, product => product.user)
     products?: ProductEntity[] | null; // One-to-Many relationship with products

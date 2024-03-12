@@ -5,12 +5,12 @@ import {
   validateLogin,
 } from '../validators/authValidator';
 import { generateToken, hashPassword } from '../utils/authUtils';
-import AuthService from '../services/authService';
+import UserService from '../services/user.service';
 
 export default class AuthController {
-  private readonly authService: AuthService;
+  private readonly authService: UserService;
 
-  constructor(authService: AuthService) {
+  constructor(authService: UserService) {
     this.authService = authService;
   }
 

@@ -1,17 +1,19 @@
-import { ConnectionOptions } from 'typeorm';
 import { env } from 'process';
+import { ConnectionOptions } from 'typeorm';
+import * as path from 'path';
 
-export const datasourceOptions: ConnectionOptions = {
-  type: env.DB_TYPE as any,
+export const ormConfig = {
+  type: env.DB_TYPE as ConnectionOptions['type'],
   host: env.DB_HOST,
   port: Number.parseInt(env.DB_PORT as string, 10),
   database: env.DB_NAME,
   username: env.DB_USER,
   password: env.DB_PASSWORD,
-  synchronize: env.ORM_SYNCHRONIZE === 'true',
   logging: env.ORM_LOGGING === 'true',
-  entities: [`./src/orm/entities/**/*.entity{.ts,.js}`],
+  synchronize: env.APP_ENV !== 'production',
+  entities: ['src/orm/entities/**/*.ts'],
+  migrations: ['src/orm/migrations/*.ts'],
   cli: {
-    migrationsDir: `./src/orm/seeds/dev`,
+    migrationsDir: `./src/orm/seeds/prod`,
   },
-};
+} as ConnectionOptions;
