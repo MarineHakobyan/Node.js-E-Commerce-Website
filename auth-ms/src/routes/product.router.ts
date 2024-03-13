@@ -1,8 +1,10 @@
 import { Router, Request, Response, NextFunction } from 'express';
-import { getRepository, QueryFailedError } from 'typeorm';
+import { getRepository } from 'typeorm';
 import { UserEntity } from '../orm/entities/userEntity';
 import { ProductEntity } from '../orm/entities/productEntity';
 
+// TODO: extract to controller and service
+// TODO separate to microservice
 const ProductRouter = Router();
 
 ProductRouter.post(

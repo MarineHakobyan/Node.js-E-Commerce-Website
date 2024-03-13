@@ -32,7 +32,8 @@
     "pg": "^8.11.3",
     "reflect-metadata": "^0.2.1",
     "typeorm": "^0.2.45",
-    "typeorm-naming-strategies": "^2.0.0"
+    "typeorm-naming-strategies": "^2.0.0",
+    "winston": "^3.12.0"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",

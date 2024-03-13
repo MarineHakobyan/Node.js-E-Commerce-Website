@@ -18,8 +18,4 @@ export class UserEntity {
 
     // @OneToMany(type => ProductEntity, product => product.user)
     // products?: ProductEntity[] | null; // One-to-Many relationship with products
-
-    async validatePassword(candidatePassword: string): Promise<boolean> {
-        return await comparePassword(candidatePassword, this.password); // Validate password during login etc.
-    }
 }

@@ -1,26 +1,23 @@
-import {Request, Response} from "express-serve-static-core";
-import { createConnection } from 'typeorm';
-import express, {NextFunction} from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import dotenv from 'dotenv';
+import { createConnection } from 'typeorm';
 
-dotenv.config()
-require('express-async-errors');
-
+import { errorHandler } from './error-handler';
+import logger from './logger';
 import { ormConfig } from './config/ormConfig';
 import { appConfig } from './config/appConfig';
-import {
-    AuthRouter,
-    UserRouter,
-    ProductRouter,
-} from './routes';
+import { AuthRouter, UserRouter, ProductRouter } from './routes';
+
+dotenv.config();
+require('express-async-errors');
 
 const app = express();
 app.use(express.json());
 
 createConnection(ormConfig)
-    .then(() => console.log('Connected to database'))
+    .then(() => logger.info('Connected to database'))
     .catch((error) => {
-        console.error(error);
+        logger.error('Failed to connect to the database', { error });
         process.exit(1);
     });
 
@@ -28,12 +25,10 @@ app.use(UserRouter);
 app.use(AuthRouter);
 app.use(ProductRouter);
 
-
-app.use((err:Error, req:Request, res: Response, next: NextFunction) => {
-    console.error(err);
-    res.status(500).send('Internal server error');
+app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+    errorHandler(err, req, res, next);
 });
 
 app.listen(appConfig.port, () => {
-    console.log(`Now running on port ${appConfig.port}`);
+    logger.info(`Now running on port ${appConfig.port}`);
 });

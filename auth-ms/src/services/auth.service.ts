@@ -1,34 +1,49 @@
+import { getRepository } from 'typeorm';
+import bcrypt from 'bcrypt';
 import { UserEntity } from '../orm/entities/userEntity';
-import { validateRegistration } from '../validators/authValidator';
-import { hashPassword } from '../utils/authUtils';
-import { TUser } from '../common/types/user.types';
-import { UserRepository } from '../orm/repositories/user.repository';
+import { User } from '../models/userModel';
 
-export default class AuthService {
-  constructor(private readonly userRepository: UserRepository) {}
+export class AuthService {
+  private userRepository = getRepository(UserEntity);
 
-  async register(userData: any): Promise<UserEntity> {
+  async register(userData: any): Promise<Omit<UserEntity, 'password'>> {
     try {
-      const { error, data } = await validateRegistration(userData);
-      if (error) {
-        throw new Error('Validation failed: ' + error.details[0].message);
+      const existingUser = await this.userRepository.findOne({
+        where: [{ username: userData.username }, { email: userData.email }],
+      });
+
+      if (existingUser) {
+        throw new Error('Username or email already registered');
       }
 
-      const user = new UserEntity();
-      user.password = await hashPassword(data.password);
-      user.username = data.username;
-      user.email = data.email;
+      const hashedPassword = await bcrypt.hash(userData.password, 10);
 
-      return await this.userRepository.save(user);
+      const newUser = new UserEntity();
+      newUser.username = userData.username;
+      newUser.email = userData.email;
+      newUser.password = hashedPassword;
+
+      const { password, ...savedUser } =
+        await this.userRepository.save(newUser);
+
+      return savedUser;
     } catch (error) {
       throw new Error('Registration failed: ' + error.message);
     }
   }
 
-  async login(username: string, password: string): Promise<TUser | null | any> {
+  async updatePassword(
+    id: number,
+    password: string,
+  ): Promise<UserEntity | undefined> {
     try {
+      const hashedPassword = await bcrypt.hash(password, 10);
+
+      await this.userRepository.update(id, { password: hashedPassword });
+
+      return this.userRepository.findOne(id);
     } catch (error) {
-      throw new Error('Login failed: ' + error.message);
+      throw new Error('User update failed.');
     }
   }
 }

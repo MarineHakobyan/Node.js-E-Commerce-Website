@@ -1,8 +1,6 @@
 import express, { NextFunction } from 'express';
 import { TIdString } from '../common/types/user.types';
 
-const router = express.Router();
-
 export function validateUserId(
   req: Request & { userId?: number; params?: TIdString },
   res: Response,
@@ -16,5 +14,3 @@ export function validateUserId(
   req.userId = parseInt(id as string, 10);
   next();
 }
-
-export { router };

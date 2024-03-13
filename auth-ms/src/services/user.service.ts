@@ -1,21 +1,40 @@
-import { getRepository, Repository } from 'typeorm';
+import { getRepository } from 'typeorm';
 
 import { UserEntity } from '../orm/entities/userEntity';
-import { TUser } from '../common/types/user.types';
-import { UserRepository } from '../orm/repositories/user.repository';
+import { User } from '../models/userModel';
 
-export default class UserService {
-  constructor(private readonly userRepository: UserRepository) {}
+export class UserService {
+  private userRepository = getRepository(UserEntity);
 
-  async getOneByData(
-    data: Partial<UserEntity | 'id' | 'email'>,
-  ): Promise<TUser | null | any> {
+  async getOne(id: number): Promise<UserEntity | undefined> {
     try {
-      const user = await this.userRepository.findOne({ where: data });
-
-      return user || null;
+      const user = await this.userRepository.findOne(id);
+      return user;
     } catch (error) {
-      throw new Error('User does not exist.');
+      throw new Error('User retrieval failed,');
+    }
+  }
+
+  async updateOne(id: number, data: User): Promise<UserEntity | undefined> {
+    try {
+      const result = await this.userRepository.update(id, data);
+
+      if (result.affected) {
+        return this.userRepository.findOne(id);
+      }
+
+      return undefined;
+    } catch (error) {
+      throw new Error('User update failed,');
+    }
+  }
+
+  async deleteOne(id: number): Promise<boolean> {
+    try {
+      const result = await this.userRepository.delete(id);
+      return !!result.affected;
+    } catch (error) {
+      throw new Error('User deletion failed.');
     }
   }
 }
