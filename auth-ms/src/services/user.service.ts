@@ -2,6 +2,7 @@ import { getRepository } from 'typeorm';
 
 import { UserEntity } from '../orm/entities/userEntity';
 import { User } from '../models/userModel';
+import { UserUpdatableOptionalDataDto } from '../dtos';
 
 export class UserService {
   private userRepository = getRepository(UserEntity);
@@ -15,7 +16,10 @@ export class UserService {
     }
   }
 
-  async updateOne(id: number, data: User): Promise<UserEntity | undefined> {
+  async updateOne(
+    id: number,
+    data: UserUpdatableOptionalDataDto,
+  ): Promise<UserEntity | undefined> {
     try {
       const result = await this.userRepository.update(id, data);
 

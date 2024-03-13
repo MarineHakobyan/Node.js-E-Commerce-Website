@@ -1,8 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
+import authConfig from '../config/auth.config';
 
 export const jwtMiddleware = (
-  req: Request,
+  req: Request | any,
   res: Response,
   next: NextFunction,
 ) => {
@@ -13,9 +14,10 @@ export const jwtMiddleware = (
   }
 
   try {
-    const decoded = jwt.verify(token, 'your-secret-key'); // Replace with your actual secret key
+    const decoded = jwt.verify(token, authConfig.jwtSecret);
     req.user = decoded;
-    next();
+
+    return next();
   } catch (error) {
     return res.status(401).json({ message: 'Unauthorized - Invalid token' });
   }

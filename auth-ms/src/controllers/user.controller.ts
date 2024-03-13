@@ -1,7 +1,7 @@
-import { User } from '../models/userModel';
 import { UserEntity } from '../orm/entities/userEntity';
 import { UserService } from '../services/user.service';
 import { TUser } from '../common/types/user.types';
+import { UserUpdatableOptionalDataDto } from '../dtos';
 
 export class UserController {
   private userService = new UserService();
@@ -20,26 +20,12 @@ export class UserController {
     }
   }
 
-  async update(data: {
-    id: number;
-    userData: any;
-  }): Promise<UserEntity | null> {
+  async updateOne(
+    id: number,
+    data: UserUpdatableOptionalDataDto,
+  ): Promise<UserEntity | null> {
     try {
-      const updatedUser = await this.userService.updateOne(id, data);
-
-      if (!updatedUser) {
-        throw new Error('Use not found.');
-      }
-
-      return updatedUser;
-    } catch (error) {
-      throw new Error('Something went wrong.');
-    }
-  }
-
-  async updateOne(data: Partial<User>): Promise<UserEntity | null> {
-    try {
-      const patchedUser = await this.userService.updateOne(data);
+      const patchedUser = await this.userService.updateOne(id, data);
 
       if (!patchedUser) {
         return null;
@@ -47,14 +33,13 @@ export class UserController {
 
       return patchedUser;
     } catch (error) {
-      // Handle errors and return an appropriate response
-      return null;
+      throw new Error('Failed to update the user.');
     }
   }
 
-  async delete(data: { userId: number }): Promise<boolean> {
+  async deleteOne(userId: number): Promise<boolean> {
     try {
-      const result = await this.userService.deleteOne(data.userId);
+      const result = await this.userService.deleteOne(userId);
 
       return result;
     } catch (error) {

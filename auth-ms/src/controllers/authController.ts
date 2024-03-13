@@ -1,13 +1,15 @@
-const AuthService = require('./auth.service');
+import {comparePassword} from "../utils/authUtils";
+import {LoginDto, UserRegistrationDto} from "../dtos";
+import {AuthService} from "../services/auth.service";
 
 const authService = new AuthService();
 
 export class AuthController {
-  async register(data) {
+  async register(data: UserRegistrationDto) {
     return authService.register(data);
   }
 
-  async login(user) {
+  async login(user:LoginDto) {
     return authService.login(user);
   }
 
@@ -15,17 +17,26 @@ export class AuthController {
     return authService.refreshToken(refreshToken);
   }
 
-  async updateOne(id: number, password: string) {
+  async updatePassword(id: number, oldPassword: string, newPassword: string) {
     try {
-      const updatedUser = await authService.updatePassword(id, password);
+      const user = await authService.getOne(id);
 
-      if (!updatedUser) {
+      if (!user) {
         throw new Error('User not found');
       }
 
+      const isEligibleToUpdate = await comparePassword(oldPassword, user.password)
+
+      if (!isEligibleToUpdate) {
+        throw new Error('Invalid old password');
+      }
+
+      const updatedUser = await authService.updatePassword(id, newPassword);
+
       return updatedUser;
     } catch (error) {
-      throw new Error('Failed to update the password');
+      throw new Error('Failed to update password');
     }
   }
+
 }
