@@ -9,18 +9,12 @@ require('express-async-errors');
 import { ormConfig } from './config/ormConfig';
 import { appConfig } from './config/appConfig';
 import {
-    createProductRouter,
-    fetchProductsRouter,
-    updateProductRouter,
-    deleteProductRouter,
+    AuthRouter,
     UserRouter,
-    AuthRouter
+    ProductRouter,
 } from './routes';
 
-dotenv.config();
-
 const app = express();
-
 app.use(express.json());
 
 createConnection(ormConfig)
@@ -32,18 +26,12 @@ createConnection(ormConfig)
 
 app.use(UserRouter);
 app.use(AuthRouter);
+app.use(ProductRouter);
 
-//: TODO: add to single router
-app.use(createProductRouter);
-app.use(fetchProductsRouter);
-app.use(updateProductRouter);
-app.use(deleteProductRouter);
 
 app.use((err:Error, req:Request, res: Response, next: NextFunction) => {
     console.error(err);
     res.status(500).send('Internal server error');
-
-    next(err);
 });
 
 app.listen(appConfig.port, () => {

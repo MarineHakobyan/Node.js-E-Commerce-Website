@@ -7,7 +7,9 @@ import express, {
 import { getRepository } from 'typeorm';
 import { UserEntity } from '../orm/entities/userEntity';
 import { router, validateUserId } from '../middleware/userAuth.middleware';
-import { userService } from '../services/user.service';
+import UserService from '../services/user.service';
+import { UserRepository } from '../orm/repositories/user.repository';
+import AuthService from '../services/auth.service';
 
 export const UserRouter = express.Router();
 
@@ -27,10 +29,7 @@ UserRouter.get(
   validateUserId as unknown as RequestHandler,
   async (req: Request & { userId?: number }, res: Response): Promise<void> => {
     try {
-      const { password, ...user } = await userService.getOneByData({
-        id: req.userId as number,
-      });
-
+      const user = await userController.getOne();
       res.json(user);
     } catch (error) {
       const statusCode = error.statusCode || 500;

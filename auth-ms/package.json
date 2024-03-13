@@ -13,11 +13,12 @@
     "dev": "nodemon --watch src/ --exec npm start",
     "build": "tsc",
     "format": "prettier --write ./src/**/*.ts",
-    "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
-    "migration:generate": "npm run typeorm -- migration:generate -c migration -n",
-    "migration:create": "npm run typeorm -- migration:create -c migration -n",
-    "migration:run": "npm run typeorm -- migration:run -c migration",
-    "migration:revert": "npm run typeorm -- migration:revert -c migration"
+    "typeorm": "ts-node ./node_modules/typeorm/cli.js",
+    "typeorm:cli": "ts-node ./node_modules/typeorm/cli -f ./ormconfig.ts",
+    "migration:generate": "typeorm migration:create -n",
+    "migration:create": "ts-node src/script/create-db.ts",
+    "migration:migrate": "npm run typeorm:cli migration:run",
+    "migration:revert": "npm run typeorm:cli migration:revert"
   },
   "keywords": [],
   "author": "",

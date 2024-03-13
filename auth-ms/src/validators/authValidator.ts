@@ -19,7 +19,7 @@ const loginSchema = Joi.object({
 
 export async function validateRegistration(
   data: any,
-): Promise<{ error?: Joi.ValidationError; value: any }> {
+): Promise<{ error?: Joi.ValidationError; data: any }> {
   return registrationSchema.validateAsync(data, { abortEarly: false });
 }
 

@@ -1,14 +1,11 @@
 import { getRepository, Repository } from 'typeorm';
 
 import { UserEntity } from '../orm/entities/userEntity';
-import { TUser } from '../types/user.types';
+import { TUser } from '../common/types/user.types';
+import { UserRepository } from '../orm/repositories/user.repository';
 
-class UserService {
-  private readonly userRepository: Repository<UserEntity>;
-
-  constructor(userRepository: Repository<UserEntity>) {
-    this.userRepository = userRepository;
-  }
+export default class UserService {
+  constructor(private readonly userRepository: UserRepository) {}
 
   async getOneByData(
     data: Partial<UserEntity | 'id' | 'email'>,
@@ -22,6 +19,3 @@ class UserService {
     }
   }
 }
-
-const userRepository = getRepository(UserEntity);
-export const userService = new UserService(userRepository);

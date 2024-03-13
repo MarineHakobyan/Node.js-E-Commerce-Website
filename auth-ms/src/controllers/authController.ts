@@ -6,24 +6,24 @@ import {
 } from '../validators/authValidator';
 import { generateToken, hashPassword } from '../utils/authUtils';
 import UserService from '../services/user.service';
+import AuthService from '../services/auth.service';
 
 export default class AuthController {
-  private readonly authService: UserService;
-
-  constructor(authService: UserService) {
-    this.authService = authService;
-  }
+  constructor(
+    private readonly userService: UserService,
+    private readonly authService: AuthService,
+  ) {}
 
   async register(req: Request, res: Response): Promise<void> {
     try {
-      const { error, value } = await validateRegistration(req.body);
+      const { error, data } = await validateRegistration(req.body);
       if (error) {
         res.status(400).json({ message: error.details[0].message });
       }
 
       const user = await this.authService.register({
-        ...value,
-        password: await hashPassword(value.password),
+        ...data,
+        password: await hashPassword(data.password),
       });
 
       res.status(201).json(user);

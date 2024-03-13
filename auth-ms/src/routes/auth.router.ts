@@ -1,9 +1,17 @@
 import express, { NextFunction, Request, Response } from 'express';
-import { getRepository, QueryFailedError } from 'typeorm';
+import { getRepository } from 'typeorm';
+
 import { UserEntity } from '../orm/entities/userEntity';
-import { userService } from '../services/user.service';
+import { UserRepository } from '../orm/repositories/user.repository';
+import UserService from '../services/user.service';
+import AuthService from '../services/auth.service';
 
 export const AuthRouter = express.Router();
+
+const userRepository = getRepository(UserEntity);
+
+const userService = new UserService(new UserRepository());
+const authService = new AuthService(new UserRepository());
 
 AuthRouter.post(
   '/user',

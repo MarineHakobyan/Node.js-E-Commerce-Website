@@ -1,5 +1,5 @@
 import {Entity, PrimaryGeneratedColumn, Column, ManyToOne} from 'typeorm';
-import {CategoryEnum} from "../../enums/productCategory.enum";
+import {CategoryEnum} from "../../common/enums/productCategory.enum";
 import {UserEntity} from "./userEntity";
 
 @Entity('products')
@@ -21,17 +21,17 @@ export class ProductEntity {
     category: CategoryEnum;
 
     @Column({ nullable: true })
-    image?: string | null;
+    image: string | null;
 
     @Column({ nullable: true })
     weight: string | null;
 
     @Column({ nullable: true })
-    dimensions?: string | null;
+    dimensions: string | null;
 
     @Column({ nullable: true })
-    material?: string | null;
+    material: string | null;
 
-@ManyToOne(type => UserEntity, user => user.products) // ManyToOne relationship with user
-    user: UserEntity;
+    // @ManyToOne(type => UserEntity, user => user.products) // ManyToOne relationship with user
+    // user: UserEntity;
 }

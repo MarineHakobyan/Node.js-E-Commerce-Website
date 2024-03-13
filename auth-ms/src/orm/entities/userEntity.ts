@@ -16,13 +16,8 @@ export class UserEntity {
     @Column()
     password: string;
 
-    @OneToMany(type => ProductEntity, product => product.user)
-    products?: ProductEntity[] | null; // One-to-Many relationship with products
-
-    @BeforeInsert()
-    async hashPasswordBeforeInsert() {
-        this.password = await hashPassword(this.password); // Hash password before saving
-    }
+    // @OneToMany(type => ProductEntity, product => product.user)
+    // products?: ProductEntity[] | null; // One-to-Many relationship with products
 
     async validatePassword(candidatePassword: string): Promise<boolean> {
         return await comparePassword(candidatePassword, this.password); // Validate password during login etc.

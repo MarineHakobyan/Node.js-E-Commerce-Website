@@ -1,27 +1,23 @@
 import { UserEntity } from '../orm/entities/userEntity';
 import { validateRegistration } from '../validators/authValidator';
 import { hashPassword } from '../utils/authUtils';
-import { TUser } from '../types/user.types';
-import { Repository } from 'typeorm';
+import { TUser } from '../common/types/user.types';
+import { UserRepository } from '../orm/repositories/user.repository';
 
-export class AuthService {
-  private readonly userRepository: Repository<UserEntity>;
-
-  constructor(userRepository: Repository<UserEntity>) {
-    this.userRepository = userRepository;
-  }
+export default class AuthService {
+  constructor(private readonly userRepository: UserRepository) {}
 
   async register(userData: any): Promise<UserEntity> {
     try {
-      const { error, value } = await validateRegistration(userData);
+      const { error, data } = await validateRegistration(userData);
       if (error) {
         throw new Error('Validation failed: ' + error.details[0].message);
       }
 
       const user = new UserEntity();
-      user.username = value.username;
-      user.email = value.email;
-      user.password = await hashPassword(value.password);
+      user.password = await hashPassword(data.password);
+      user.username = data.username;
+      user.email = data.email;
 
       return await this.userRepository.save(user);
     } catch (error) {

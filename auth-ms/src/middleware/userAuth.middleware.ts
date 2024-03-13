@@ -1,5 +1,5 @@
 import express, { NextFunction } from 'express';
-import { TIdString } from '../types/user.types';
+import { TIdString } from '../common/types/user.types';
 
 const router = express.Router();
 
