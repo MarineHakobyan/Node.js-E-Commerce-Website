@@ -12,7 +12,7 @@ export async function hashPassword(password: string): Promise<string> {
   }
 }
 
-export async function generateToken(user: any): Promise<string> {
+export function generateToken(user: any): string {
   try {
     const payload = {
       userId: user.id,

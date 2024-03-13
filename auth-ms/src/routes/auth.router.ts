@@ -43,21 +43,6 @@ AuthRouter.post(
   }),
 );
 
-AuthRouter.post(
-  '/auth/refresh-token',
-  jwtMiddleware,
-  handleAsync(async (req: Request, res: Response) => {
-    try {
-      const refreshToken = req.body?.refreshToken;
-      const result = await authController.refreshToken(refreshToken);
-      res.status(200).json(result);
-    } catch (error) {
-      console.error(error);
-      res.status(401).json({ error: 'Invalid refresh token' });
-    }
-  }),
-);
-
 AuthRouter.put(
     '/auth/password',
     jwtMiddleware,

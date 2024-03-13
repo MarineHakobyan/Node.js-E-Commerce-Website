@@ -2,14 +2,14 @@ import express, { Request, Response, NextFunction } from 'express';
 import dotenv from 'dotenv';
 import { createConnection } from 'typeorm';
 
-import { errorHandler } from './error-handler';
-import logger from './logger';
-import { ormConfig } from './config/ormConfig';
-import { appConfig } from './config/appConfig';
-import { AuthRouter, UserRouter, ProductRouter } from './routes';
-
 dotenv.config();
 require('express-async-errors');
+
+import logger from './logger';
+import { errorHandler } from './error-handler';
+import { ormConfig, appConfig } from './config';
+import { AuthRouter, UserRouter, ProductRouter } from './routes';
+
 
 const app = express();
 app.use(express.json());

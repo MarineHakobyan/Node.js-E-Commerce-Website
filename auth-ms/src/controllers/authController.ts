@@ -1,8 +1,10 @@
 import {comparePassword} from "../utils/authUtils";
 import {LoginDto, UserRegistrationDto} from "../dtos";
 import {AuthService} from "../services/auth.service";
+import {UserService} from "../services/user.service";
 
 const authService = new AuthService();
+const userService = new UserService();
 
 export class AuthController {
   async register(data: UserRegistrationDto) {
@@ -13,13 +15,9 @@ export class AuthController {
     return authService.login(user);
   }
 
-  async refreshToken(refreshToken: string) {
-    return authService.refreshToken(refreshToken);
-  }
-
   async updatePassword(id: number, oldPassword: string, newPassword: string) {
     try {
-      const user = await authService.getOne(id);
+      const user = await userService.getOne(id);
 
       if (!user) {
         throw new Error('User not found');

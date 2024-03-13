@@ -1,5 +1,4 @@
 import { env } from "process";
-import path from "path";
 
 module.exports = {
     type: env.DB_TYPE ,
@@ -10,9 +9,10 @@ module.exports = {
     password: env.DB_PASSWORD,
     logging: env.ORM_LOGGING === 'true',
     synchronize: env.ORM_LOGGING === 'true',
-    entities: [path.resolve(__dirname, '../orm/entities/**/*.entity{.js,.ts}')],
-    migrations: ['dist/migration/**/*.js'],
+    entities: ['.src/orm/entities/**/*.ts'],
+    migrations: ['.src/orm/migrations/*.ts'],
     cli: {
-        migrationsDir: `./src/orm/seeds/prod`,
+        migrationsDir: `./src/orm/migrations`,
+        entitiesDir: `./src/orm/entities`
     },
-}
+};

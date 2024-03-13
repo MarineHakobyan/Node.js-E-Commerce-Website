@@ -1,4 +1,4 @@
-import { UserEntity } from '../orm/entities/userEntity';
+import { UserEntity } from '../orm/entities/user.entity';
 import { UserService } from '../services/user.service';
 import { TUser } from '../common/types/user.types';
 import { UserUpdatableOptionalDataDto } from '../dtos';

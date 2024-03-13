@@ -1,7 +1,11 @@
 import { getRepository } from 'typeorm';
 import bcrypt from 'bcrypt';
-import { UserEntity } from '../orm/entities/userEntity';
+
+import { UserEntity } from '../orm/entities/user.entity';
 import { User } from '../models/userModel';
+import authConfig from "../config/auth.config";
+import {LoginDto} from "../dtos";
+import {generateToken} from "../utils/authUtils";
 
 export class AuthService {
   private userRepository = getRepository(UserEntity);
@@ -29,6 +33,36 @@ export class AuthService {
       return savedUser;
     } catch (error) {
       throw new Error('Registration failed: ' + error.message);
+    }
+  }
+
+  async login(loginData: LoginDto): Promise<User> {
+    try {
+      const user = await this.userRepository.findOne({
+        where: { email: loginData.email },
+      });
+
+      if (!user) {
+        throw new Error('User not found.')
+      }
+
+      const passwordMatch = await bcrypt.compare(loginData.password, user.password);
+
+      if (!passwordMatch) {
+        throw new Error('Login or password is not matching.')
+      }
+
+      const token = await generateToken(user.id)
+
+      const {password, ...data} = user;
+
+      return {
+        ...data,
+        token,
+      };
+    } catch (error) {
+      console.error(error);
+      throw new Error('Login failed');
     }
   }
 

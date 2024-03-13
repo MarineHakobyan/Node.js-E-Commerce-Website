@@ -1,6 +1,5 @@
 import { env } from 'process';
 import { ConnectionOptions } from 'typeorm';
-import * as path from 'path';
 
 export const ormConfig = {
   type: env.DB_TYPE as ConnectionOptions['type'],
@@ -11,9 +10,11 @@ export const ormConfig = {
   password: env.DB_PASSWORD,
   logging: env.ORM_LOGGING === 'true',
   synchronize: env.APP_ENV !== 'production',
-  entities: ['src/orm/entities/**/*.ts'],
-  migrations: ['src/orm/migrations/*.ts'],
+  entities: ['.src/orm/entities/**/*.ts'],
+  migrations: ['.src/orm/migrations/*.ts'],
   cli: {
-    migrationsDir: `./src/orm/seeds/prod`,
+    migrationsDir: `./src/orm/migrations`,
+    entitiesDir: `./src/orm/entities`
   },
 } as ConnectionOptions;
+

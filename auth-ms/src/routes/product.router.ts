@@ -1,7 +1,7 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import { getRepository } from 'typeorm';
-import { UserEntity } from '../orm/entities/userEntity';
-import { ProductEntity } from '../orm/entities/productEntity';
+import { UserEntity } from '../orm/entities/user.entity';
+import { ProductEntity } from '../orm/entities/product.entity';
 
 // TODO: extract to controller and service
 // TODO separate to microservice

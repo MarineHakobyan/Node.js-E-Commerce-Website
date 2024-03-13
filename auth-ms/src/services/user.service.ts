@@ -1,6 +1,6 @@
 import { getRepository } from 'typeorm';
 
-import { UserEntity } from '../orm/entities/userEntity';
+import { UserEntity } from '../orm/entities/user.entity';
 import { User } from '../models/userModel';
 import { UserUpdatableOptionalDataDto } from '../dtos';
 
