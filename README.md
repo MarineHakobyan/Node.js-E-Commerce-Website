@@ -1,8 +1,8 @@
 # Quick Start Guide
 
-This guide provides a quick overview of the steps necessary to get the application up and running.
+## Main Node Environment: Node 16.13.1
 
-## 1. CD to project and Copy Environment Variables
+## 1. Go to project and Copy Environment Variables
 
 ```bash
 cd auth-ms

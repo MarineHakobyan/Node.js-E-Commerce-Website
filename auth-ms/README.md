@@ -1,16 +1,37 @@
-Quick Start Guide
-This guide provides a quick overview of the steps necessary to get the application up and running.
+# Quick Start Guide
 
-Main Node Environment: Node 16.13.1
-1. Copy Environment Variables
-   cp .env.example .env
-2. Start Docker Containers
-   docker-compose up postgres -d
-3. Create Database
-   docker exec -it $(docker-compose ps -q postgres) psql -d builderpad
-4. Install Dependencies
-   npm i
-5. Run Migrations
-   npm run migration:run
-6. Start Application
-   npm run start
+## Main Node Environment: Node 16.13.1
+
+## 1. Go to project and Copy Environment Variables
+
+```bash
+cd auth-ms
+cp .env.example .env
+```
+
+## 2. Start Docker Containers
+```bash
+docker-compose up -d postgres
+```
+
+## 3. Create Database
+```bash
+docker exec -it $(docker-compose ps -q postgres) psql -d builderpad
+```
+
+## 4. Install Dependencies and Build
+```bash
+npm install
+npm run build
+```
+
+## 5. Run Migrations
+```bash
+npm run migration:run
+```
+
+## 6. Start Application
+```bash
+npm run start
+```
+
