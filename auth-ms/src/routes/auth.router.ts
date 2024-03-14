@@ -3,8 +3,16 @@ import { Request, Response } from 'express';
 
 import { handleAsync } from '../common/helpers';
 import { AuthController } from '../controllers/authController';
-import {LoginDto, UpdatePasswordDto, UserRegistrationDto} from '../dtos/user.dto';
-import {userRegistrationSchema, loginSchema, updatePasswordSchema} from '../schemas';
+import {
+  LoginDto,
+  UpdatePasswordDto,
+  UserRegistrationDto,
+} from '../dtos/user.dto';
+import {
+  userRegistrationSchema,
+  loginSchema,
+  updatePasswordSchema,
+} from '../schemas';
 import { validateRequest } from '../middleware/validateInput';
 import { jwtMiddleware } from '../middleware/jwt.middleware';
 
@@ -44,20 +52,24 @@ AuthRouter.post(
 );
 
 AuthRouter.put(
-    '/auth/password',
-    jwtMiddleware,
-    validateRequest(updatePasswordSchema),
-    handleAsync(async (req: Request, res: Response) => {
-        try {
-            const {oldPassword, newPassword, email} = req.body as UpdatePasswordDto;
-            const result = await authController.updatePassword(req.body.userId, oldPassword, newPassword);
+  '/auth/password',
+  jwtMiddleware,
+  validateRequest(updatePasswordSchema),
+  handleAsync(async (req: Request, res: Response) => {
+    try {
+      const { oldPassword, newPassword, email } = req.body as UpdatePasswordDto;
+      const result = await authController.updatePassword(
+        req.body.userId,
+        oldPassword,
+        newPassword,
+      );
 
-            res.status(200).json(result);
-        } catch (error) {
-            console.error(error);
-            res.status(400).json({ error: 'Failed to update password' });
-        }
-    }),
+      res.status(200).json(result);
+    } catch (error) {
+      console.error(error);
+      res.status(400).json({ error: 'Failed to update password' });
+    }
+  }),
 );
 
 export { AuthRouter };

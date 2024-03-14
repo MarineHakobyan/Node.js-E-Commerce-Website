@@ -1,2 +1,2 @@
-export * from './appConfig'
-export * from './ormConfig'
+export * from './appConfig';
+export * from './ormConfig';

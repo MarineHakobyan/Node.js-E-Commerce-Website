@@ -10,9 +10,9 @@ export class LoginDto {
 }
 
 export interface UpdatePasswordDto {
-  email:string,
-  oldPassword:string,
-  newPassword:string
+  email: string;
+  oldPassword: string;
+  newPassword: string;
 }
 
 export interface UserUpdatableOptionalDataDto {

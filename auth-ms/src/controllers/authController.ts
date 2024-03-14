@@ -1,7 +1,7 @@
-import {comparePassword} from "../utils/authUtils";
-import {LoginDto, UserRegistrationDto} from "../dtos";
-import {AuthService} from "../services/auth.service";
-import {UserService} from "../services/user.service";
+import { comparePassword } from '../utils/authUtils';
+import { LoginDto, UserRegistrationDto } from '../dtos';
+import { AuthService } from '../services/auth.service';
+import { UserService } from '../services/user.service';
 
 const authService = new AuthService();
 const userService = new UserService();
@@ -11,7 +11,7 @@ export class AuthController {
     return authService.register(data);
   }
 
-  async login(user:LoginDto) {
+  async login(user: LoginDto) {
     return authService.login(user);
   }
 
@@ -23,7 +23,10 @@ export class AuthController {
         throw new Error('User not found');
       }
 
-      const isEligibleToUpdate = await comparePassword(oldPassword, user.password)
+      const isEligibleToUpdate = await comparePassword(
+        oldPassword,
+        user.password,
+      );
 
       if (!isEligibleToUpdate) {
         throw new Error('Invalid old password');
@@ -36,5 +39,4 @@ export class AuthController {
       throw new Error('Failed to update password');
     }
   }
-
 }

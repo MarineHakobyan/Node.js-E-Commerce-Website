@@ -3,9 +3,9 @@ import bcrypt from 'bcrypt';
 
 import { UserEntity } from '../orm/entities/user.entity';
 import { User } from '../models/userModel';
-import authConfig from "../config/auth.config";
-import {LoginDto} from "../dtos";
-import {generateToken} from "../utils/authUtils";
+import authConfig from '../config/auth.config';
+import { LoginDto } from '../dtos';
+import { generateToken } from '../utils/authUtils';
 
 export class AuthService {
   private userRepository = getRepository(UserEntity);
@@ -27,8 +27,9 @@ export class AuthService {
       newUser.email = userData.email;
       newUser.password = hashedPassword;
 
-      const { password, ...savedUser } =
-        await this.userRepository.save(newUser);
+      const { password, ...savedUser } = await this.userRepository.save(
+        newUser,
+      );
 
       return savedUser;
     } catch (error) {
@@ -43,18 +44,21 @@ export class AuthService {
       });
 
       if (!user) {
-        throw new Error('User not found.')
+        throw new Error('User not found.');
       }
 
-      const passwordMatch = await bcrypt.compare(loginData.password, user.password);
+      const passwordMatch = await bcrypt.compare(
+        loginData.password,
+        user.password,
+      );
 
       if (!passwordMatch) {
-        throw new Error('Login or password is not matching.')
+        throw new Error('Login or password is not matching.');
       }
 
-      const token = await generateToken(user.id)
+      const token = await generateToken(user.id);
 
-      const {password, ...data} = user;
+      const { password, ...data } = user;
 
       return {
         ...data,

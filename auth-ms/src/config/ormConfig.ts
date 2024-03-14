@@ -14,7 +14,6 @@ export const ormConfig = {
   migrations: ['.src/orm/migrations/*.ts'],
   cli: {
     migrationsDir: `./src/orm/migrations`,
-    entitiesDir: `./src/orm/entities`
+    entitiesDir: `./src/orm/entities`,
   },
 } as ConnectionOptions;
-
