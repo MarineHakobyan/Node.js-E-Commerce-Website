@@ -2,11 +2,12 @@
 
 This guide provides a quick overview of the steps necessary to get the application up and running.
 
-## 1. Copy Environment Variables
+## 1. CD to project and Copy Environment Variables
 
 Copy the environment variables from the provided example file:
 
 ```bash
+cd auth-ms
 cp .env.example .env
 ```
 
