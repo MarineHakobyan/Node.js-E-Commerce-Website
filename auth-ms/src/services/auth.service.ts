@@ -56,7 +56,7 @@ export class AuthService {
       });
 
       if (!user) {
-        throw new Error('User not found.');
+        throw new Error('User not found');
       }
 
       const passwordMatch = await bcrypt.compare(
@@ -65,10 +65,10 @@ export class AuthService {
       );
 
       if (!passwordMatch) {
-        throw new Error('Login or password is not matching.');
+        throw new Error('Invalid login or password');
       }
 
-      const token = await generateToken(user.id);
+      const token = generateToken(user.id);
 
       const { password, ...data } = user;
 
@@ -78,21 +78,22 @@ export class AuthService {
       };
     } catch (error) {
       console.error(error);
+      if (error.message === 'Invalid login or password') {
+        throw error;
+      }
+
       throw new Error('Login failed');
     }
   }
 
-  async updatePassword(
-    id: number,
-    password: string,
-  ): Promise<UserEntity> {
+  async updatePassword(id: number, password: string): Promise<UserEntity> {
     try {
       const hashedPassword = await bcrypt.hash(password, 10);
 
       await this.userRepository.update(id, { password: hashedPassword });
-      const updated= await this.userRepository.findOne(id);
+      const updated = await this.userRepository.findOne(id);
 
-      if(!updated) {
+      if (!updated) {
         throw new Error('Failed to update User');
       }
 

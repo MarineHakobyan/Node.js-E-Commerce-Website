@@ -17,9 +17,7 @@ export class AuthController {
 
   async updatePassword(id: number, oldPassword: string, newPassword: string) {
     try {
-      console.log({ id, oldPassword, newPassword });
       const user = await userService.getOne(id);
-      console.log({ user });
 
       if (!user) {
         throw new Error('User not found');
@@ -29,7 +27,6 @@ export class AuthController {
         oldPassword,
         user.password,
       );
-      console.log({ isEligibleToUpdate, oldPassword, newPassword });
 
       if (!isEligibleToUpdate) {
         throw new Error('Invalid old password');
@@ -43,7 +40,6 @@ export class AuthController {
 
       return updatedUser;
     } catch (error) {
-      console.log(error);
       throw new Error('Failed to update password');
     }
   }

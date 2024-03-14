@@ -15,7 +15,12 @@ export interface UpdatePasswordDto {
   newPassword: string;
 }
 
-export interface UserUpdatableOptionalDataDto {
+export interface UserUpdateOptionalDataDto {
+  username?: string;
+  email?: string;
+}
+
+export interface UserUpdateAllDataDto {
   username: string;
   email: string;
 }

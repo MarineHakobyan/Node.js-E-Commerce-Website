@@ -2,50 +2,66 @@ import express, { Request, Response } from 'express';
 import { handleAsync } from '../common/helpers';
 import { UserController } from '../controllers/user.controller';
 import { jwtMiddleware } from '../middleware/jwt.middleware';
-import { UserUpdatableOptionalDataDto } from '../dtos';
+import { UserUpdateOptionalDataDto } from '../dtos';
+import {
+    TRequestWithToken, TUpdateUserRequest,
+    TUserTokenDecoded,
+} from '../common/types/user.types';
+import {validateRequest} from "../middleware/validateInput";
+import {userUpdateOptionalSchema, userUpdateAllSchema} from "../schemas";
 
 const userController = new UserController();
 const UserRouter = express.Router();
 
 UserRouter.get(
-  '/user/',
-  jwtMiddleware,
-  handleAsync(async (req: Request, res: Response) => {
-    const userId = parseInt(req.params.id, 10);
+    '/user',
+    jwtMiddleware,
+    handleAsync(async (req: TRequestWithToken, res: Response) => {
+        const userId = req.user.userId;
+        const user = await userController.getOne(userId);
 
-    return await userController.getOne(userId);
-  }),
+        res.send(user);
+    }),
 );
 
 UserRouter.put(
-  '/users/:id',
+  '/user',
   jwtMiddleware,
-  handleAsync(async (req: Request, res: Response) => {
-    const data = req.body as UserUpdatableOptionalDataDto;
-    const userId = req.body.userId;
+  validateRequest(userUpdateAllSchema),
+  handleAsync(async (req: TUpdateUserRequest, res: Response) => {
+    const updatedUser = await userController.updateOne(req.user.userId, req.body);
 
-    return await userController.updateOne(userId, data);
+    res.status(200).json({ message: 'User updated successfully', user: updatedUser });
   }),
 );
 
 UserRouter.patch(
-  '/users/:id',
+  '/user',
   jwtMiddleware,
-  handleAsync(async (req: Request, res: Response) => {
-    const data = req.body as UserUpdatableOptionalDataDto;
-    const userId = req.body.userId;
+  validateRequest(userUpdateOptionalSchema),
+  handleAsync(async (req: TRequestWithToken, res: Response) => {
+    const data = req.body as UserUpdateOptionalDataDto;
+    const userId = req.user.userId;
 
-    return await userController.updateOne(userId, data);
+    await userController.updateOne(userId, data);
+
+    return res.status(200).send('User Updated')
   }),
 );
 
 UserRouter.delete(
-  '/users/:id',
+  '/user',
   jwtMiddleware,
-  handleAsync(async (req: Request, res: Response) => {
-    const userId = parseInt(req.body.userId, 10);
+  handleAsync(async (req: TRequestWithToken, res: Response) => {
+    const userId = req.user.userId;
 
-    return await userController.deleteOne(userId);
+    const isDeleted = await userController.deleteOne(userId);
+
+    if(isDeleted) {
+        res.status(200).send('User deleted')
+    }
+
+    throw new Error('Failed to delete')
   }),
 );
 

@@ -1,5 +1,6 @@
 import { User } from '../../models/userModel';
 import {Request} from "express";
+import {UserUpdateOptionalDataDto} from "../../dtos";
 
 export type TUser = Omit<
   User,
@@ -17,3 +18,5 @@ export type TUserTokenDecoded = {
 export type TRequestWithToken = Request & {
     user: TUserTokenDecoded
 }
+
+export type TUpdateUserRequest = UserUpdateOptionalDataDto & TRequestWithToken
