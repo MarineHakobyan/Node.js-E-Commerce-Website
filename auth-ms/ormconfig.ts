@@ -15,7 +15,7 @@ export default [
     entities: [`./src/orm/entities/**/*.entity{.ts,.js}`],
     cli: {
       migrationsDir: `./src/orm/migrations`,
-      entitiesDir: `./src/orm/entities/**/*.entity{.ts, .js}`,
+      entitiesDir: `./src/orm/entities`,
     },
     namingStrategy: new SnakeNamingStrategy(),
   },
@@ -32,6 +32,7 @@ export default [
     entities: [`./src/orm/entities/**/*.entity{.ts,.js}`],
     cli: {
       migrationsDir: `./src/orm/seeds`,
+      entitiesDir: `./src/orm/entities`
     },
     namingStrategy: new SnakeNamingStrategy(),
   }

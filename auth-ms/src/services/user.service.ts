@@ -1,11 +1,22 @@
-import { getRepository } from 'typeorm';
+import { createConnection, Repository } from 'typeorm';
 
 import { UserEntity } from '../orm/entities/user.entity';
-import { User } from '../models/userModel';
 import { UserUpdatableOptionalDataDto } from '../dtos';
+import { ormConfig } from '../config';
 
 export class UserService {
-  private userRepository = getRepository(UserEntity);
+  private userRepository: Repository<UserEntity>;
+
+  constructor() {
+    (async () => {
+      try {
+        const dbConnection = await createConnection(ormConfig);
+        this.userRepository = dbConnection.getRepository(UserEntity);
+      } catch (error) {
+        console.error('Initialization failed:', error);
+      }
+    })();
+  }
 
   async getOne(id: number): Promise<UserEntity | undefined> {
     try {

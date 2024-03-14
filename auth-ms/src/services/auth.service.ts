@@ -1,4 +1,4 @@
-import { getRepository } from 'typeorm';
+import { createConnection, getRepository, Repository } from 'typeorm';
 import bcrypt from 'bcrypt';
 
 import { UserEntity } from '../orm/entities/user.entity';
@@ -6,9 +6,21 @@ import { User } from '../models/userModel';
 import authConfig from '../config/auth.config';
 import { LoginDto } from '../dtos';
 import { generateToken } from '../utils/authUtils';
+import { ormConfig } from '../config';
 
 export class AuthService {
-  private userRepository = getRepository(UserEntity);
+  private userRepository: Repository<UserEntity>;
+
+  constructor() {
+    (async () => {
+      try {
+        const dbConnection = await createConnection(ormConfig);
+        this.userRepository = dbConnection.getRepository(UserEntity);
+      } catch (error) {
+        console.error('Initialization failed:', error);
+      }
+    })();
+  }
 
   async register(userData: any): Promise<Omit<UserEntity, 'password'>> {
     try {
