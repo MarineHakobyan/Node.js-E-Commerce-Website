@@ -1,5 +1,5 @@
 import * as express from 'express';
-import { Request, Response } from 'express';
+import {NextFunction, Request, Response} from 'express';
 
 import { handleAsync } from '../common/helpers';
 import { AuthController } from '../controllers/authController';
@@ -22,16 +22,15 @@ const AuthRouter = express.Router();
 AuthRouter.post(
   '/auth/register',
   validateRequest(userRegistrationSchema),
-  handleAsync(async (req: Request, res: Response) => {
+  handleAsync(async (req: Request, res: Response, next:NextFunction) => {
     try {
+        console.log(req.body)
       const data = req.body as UserRegistrationDto;
       const result = await authController.register(data);
 
       res.status(201).json(result);
     } catch (error) {
-      console.error(error);
-
-      res.status(500).json({ error: 'Internal server error' });
+     next(error)
     }
   }),
 );

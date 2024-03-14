@@ -25,7 +25,7 @@ export class AuthService {
   async register(userData: any): Promise<Omit<UserEntity, 'password'>> {
     try {
       const existingUser = await this.userRepository.findOne({
-        where: [{ username: userData.username }, { email: userData.email }],
+        where: { email: userData.email },
       });
 
       if (existingUser) {

@@ -4,7 +4,7 @@ import * as Joi from 'joi';
 export const validateRequest = (schema: Joi.ObjectSchema) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { error, value } = await schema.validateAsync(req.body, {
+      const { error, value } =  schema.validate(req.body, {
         abortEarly: false,
       });
 
@@ -18,7 +18,7 @@ export const validateRequest = (schema: Joi.ObjectSchema) => {
       }
     } catch (err) {
       console.error(err);
-      res.status(500).json({ error: 'Internal server error' });
+      next(err)
     }
   };
 };

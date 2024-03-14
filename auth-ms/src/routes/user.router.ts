@@ -8,7 +8,7 @@ const userController = new UserController();
 const UserRouter = express.Router();
 
 UserRouter.get(
-  '/users/:id',
+  '/user/',
   jwtMiddleware,
   handleAsync(async (req: Request, res: Response) => {
     const userId = parseInt(req.params.id, 10);

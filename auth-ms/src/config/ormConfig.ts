@@ -5,7 +5,7 @@ import * as path from 'path';
 export const ormConfig = {
   type: env.DB_TYPE as ConnectionOptions['type'],
   host: env.DB_HOST,
-  port: Number.parseInt(env.DB_PORT as string, 10),
+  port: parseInt(env.DB_PORT as string, 10),
   database: env.DB_NAME,
   username: env.DB_USER,
   password: env.DB_PASSWORD,
