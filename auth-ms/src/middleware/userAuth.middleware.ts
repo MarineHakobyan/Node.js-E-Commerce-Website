@@ -1,16 +1,17 @@
 import express, { NextFunction } from 'express';
-import { TIdString } from '../common/types/user.types';
+import { TIdString, TReqWithProductId } from '../common/types/user.types';
 
-export function validateUserId(
-  req: Request & { userId?: number; params?: TIdString },
+export function validateProductId(
+  req: TReqWithProductId,
   res: Response,
   next: NextFunction,
 ) {
-  const id = req.params?.id;
-  if (!id || isNaN(+id)) {
-    next(new Error('Invalid user ID: Must be a number'));
+  const { id } = req.params;
+
+  if (id && !isNaN(Number(id))) {
+    next(new Error('Invalid Product ID: Must be a number'));
   }
 
-  req.userId = parseInt(id as string, 10);
+  req.productId = Number(id);
   next();
 }

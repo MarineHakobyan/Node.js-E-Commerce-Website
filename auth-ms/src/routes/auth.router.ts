@@ -14,7 +14,7 @@ import {
   updatePasswordSchema,
 } from '../schemas';
 import { validateRequest } from '../middleware/validateInput';
-import { jwtMiddleware } from '../middleware/jwt.middleware';
+import { jwtValidator } from '../middleware/jwtValidator';
 import { TRequestWithToken } from '../common/types/user.types';
 
 const authController = new AuthController();
@@ -43,7 +43,7 @@ AuthRouter.post(
 
 AuthRouter.put(
   '/auth/password',
-  jwtMiddleware,
+  jwtValidator,
   validateRequest(updatePasswordSchema),
   handleAsync(
     async (req: TRequestWithToken, res: Response, next: NextFunction) => {

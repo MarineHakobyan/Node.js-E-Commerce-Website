@@ -14,7 +14,7 @@ export class UserController {
         throw new Error('User not found');
       }
 
-      const {password, ...result} = user
+      const { password, ...result } = user;
 
       return result;
     } catch (error) {
@@ -33,7 +33,7 @@ export class UserController {
         throw new Error();
       }
 
-      const {password, ...result} = patchedUser
+      const { password, ...result } = patchedUser;
 
       return result;
     } catch (error) {

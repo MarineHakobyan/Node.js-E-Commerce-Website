@@ -3,7 +3,8 @@ import {
   LoginDto,
   UserUpdateOptionalDataDto,
   UserRegistrationDto,
-  UpdatePasswordDto, UserUpdateAllDataDto,
+  UpdatePasswordDto,
+  UserUpdateAllDataDto,
 } from '../dtos';
 
 export const userRegistrationSchema = Joi.object<UserRegistrationDto>({
@@ -20,7 +21,9 @@ export const userUpdateAllSchema = Joi.object<UserRegistrationDto>({
 export const userUpdateOptionalSchema = Joi.object<UserUpdateAllDataDto>({
   username: Joi.string().alphanum().min(3).max(30),
   email: Joi.string().email(),
-}).or('username', 'email').required();
+})
+  .or('username', 'email')
+  .required();
 
 export const loginSchema = Joi.object<LoginDto>({
   email: Joi.string().email().required(),
@@ -33,9 +36,7 @@ export const updatePasswordSchema = Joi.object<UpdatePasswordDto>({
   newPassword: Joi.string().min(8).max(30).required(),
 });
 
-export const updateUserOptionalsSchema =
-  Joi.object<UserUpdateOptionalDataDto>({
-    username: Joi.string().alphanum().min(3).max(30).required(),
-    email: Joi.string().email().required(),
-  });
-
+export const updateUserOptionalsSchema = Joi.object<UserUpdateOptionalDataDto>({
+  username: Joi.string().alphanum().min(3).max(30).required(),
+  email: Joi.string().email().required(),
+});

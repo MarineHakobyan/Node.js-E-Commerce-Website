@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { authConfig } from '../config/auth.config';
 
-export const jwtMiddleware = (
+export const jwtValidator = (
   req: Request | any,
   res: Response,
   next: NextFunction,
