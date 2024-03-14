@@ -2,6 +2,8 @@ import * as jwt from 'jsonwebtoken';
 import * as bcrypt from 'bcrypt';
 
 import { appConfig } from '../config/appConfig';
+import { authConfig } from '../config';
+import { User } from '../models/userModel';
 
 export async function hashPassword(password: string): Promise<string> {
   const saltRounds = 10;
@@ -12,17 +14,12 @@ export async function hashPassword(password: string): Promise<string> {
   }
 }
 
-export function generateToken(user: any): string {
-  try {
-    const payload = {
-      userId: user.id,
-      username: user.username,
-      email: user.email,
-    };
-    return jwt.sign(payload, appConfig.secret, { expiresIn: '1h' });
-  } catch (error) {
-    throw new Error('Token generation failed');
-  }
+export function generateToken(userId: number): string {
+  const payload = { userId };
+
+  return jwt.sign(payload, authConfig.jwtSecret, {
+    expiresIn: authConfig.jwtExpiration,
+  });
 }
 
 export async function comparePassword(
@@ -30,6 +27,7 @@ export async function comparePassword(
   hashedPassword: string,
 ): Promise<boolean> {
   try {
+    console.log(candidatePassword, hashedPassword);
     return await bcrypt.compare(candidatePassword, hashedPassword);
   } catch (error) {
     throw new Error('Password comparison failed');

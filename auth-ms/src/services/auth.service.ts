@@ -3,10 +3,9 @@ import bcrypt from 'bcrypt';
 
 import { UserEntity } from '../orm/entities/user.entity';
 import { User } from '../models/userModel';
-import authConfig from '../config/auth.config';
 import { LoginDto } from '../dtos';
 import { generateToken } from '../utils/authUtils';
-import { ormConfig } from '../config';
+import { ormConfig, authConfig } from '../config';
 
 export class AuthService {
   private userRepository: Repository<UserEntity>;
@@ -51,6 +50,7 @@ export class AuthService {
 
   async login(loginData: LoginDto): Promise<User> {
     try {
+      const x = await this.userRepository.find();
       const user = await this.userRepository.findOne({
         where: { email: loginData.email },
       });
@@ -85,13 +85,18 @@ export class AuthService {
   async updatePassword(
     id: number,
     password: string,
-  ): Promise<UserEntity | undefined> {
+  ): Promise<UserEntity> {
     try {
       const hashedPassword = await bcrypt.hash(password, 10);
 
       await this.userRepository.update(id, { password: hashedPassword });
+      const updated= await this.userRepository.findOne(id);
 
-      return this.userRepository.findOne(id);
+      if(!updated) {
+        throw new Error('Failed to update User');
+      }
+
+      return updated;
     } catch (error) {
       throw new Error('User update failed.');
     }

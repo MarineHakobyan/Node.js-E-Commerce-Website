@@ -1,4 +1,5 @@
 import { User } from '../../models/userModel';
+import {Request} from "express";
 
 export type TUser = Omit<
   User,
@@ -6,3 +7,13 @@ export type TUser = Omit<
 >;
 
 export type TIdString = { id: string };
+
+export type TUserTokenDecoded = {
+    userId: number,
+    iat: number,
+    exp:number
+}
+
+export type TRequestWithToken = Request & {
+    user: TUserTokenDecoded
+}
