@@ -20,11 +20,6 @@ app.use(UserRouter);
 app.use(AuthRouter);
 app.use(ProductRouter);
 
-// Temporary route for /home endpoint
-app.get('/us', handleAsync(async (req: Request, res: Response) => {
-   res.send('hello')
-}),);
-
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     errorHandler(err, req, res, next);
 });

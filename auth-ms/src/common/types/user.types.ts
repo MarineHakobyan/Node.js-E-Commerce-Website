@@ -18,7 +18,3 @@ export type TRequestWithToken = Request & {
 }
 
 export type TUpdateUserRequest = UserUpdateOptionalDataDto & TRequestWithToken
-
-export type TIdString = { id: string };
-
-export type TReqWithProductId = Request & { userId?: number; params?: TIdString } & { productId: number }

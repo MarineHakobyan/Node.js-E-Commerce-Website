@@ -1,7 +1,7 @@
-import express, { NextFunction } from 'express';
-import { TIdString, TReqWithProductId } from '../common/types/user.types';
+import { NextFunction, Response } from 'express';
+import {TReqWithProductId} from "../common/types/product.types";
 
-export function validateProductId(
+export function transformProductId(
   req: TReqWithProductId,
   res: Response,
   next: NextFunction,
