@@ -26,7 +26,7 @@ export class AuthController {
       const user = await userService.getOne(id);
 
       if (!user) {
-        throw new Error('User not found');
+        throw new Error('UserEntity not found');
       }
 
       const isEligibleToUpdate = await comparePassword(
