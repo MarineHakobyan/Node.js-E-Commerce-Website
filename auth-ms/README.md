@@ -1,3 +1,11 @@
+## Current Status
+
+<span style="color: #007acc">
+
+#### 🚀 Currently working on adding products service and separating it from auth-microservice.
+
+</span>
+
 # Quick Start Guide
 
 ## Main Node Environment: Node 16.13.1
