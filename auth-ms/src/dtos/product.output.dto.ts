@@ -1,6 +1,6 @@
 import { CategoryEnum } from '../common/enums/productCategory.enum';
 
-export class Product {
+export class ProductOutputDto {
   id: number;
   title: string;
   description: string;

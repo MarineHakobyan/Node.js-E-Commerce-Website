@@ -34,7 +34,6 @@ ProductRouter.post(
 
 ProductRouter.get(
   '/products',
-  validateRequest(addToCartSchema),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const products = await productController.getAllProducts();
@@ -48,11 +47,12 @@ ProductRouter.get(
 
 ProductRouter.post(
   '/cart',
+  validateRequest(addToCartSchema),
   jwtValidator,
   async (req: TReqWithProductId, res: Response, next: NextFunction) => {
     try {
       const userId = req.user.userId;
-      const products = await productController.addToCart(userId,req.productId);
+      const products = await productController.addToCart(userId, req.productId);
 
       res.json(products);
     } catch (error) {
@@ -79,7 +79,7 @@ ProductRouter.get(
 ProductRouter.delete(
   '/cart',
   jwtValidator,
-    parseProductIdParam,
+  parseProductIdParam,
   async (req: TReqWithProductId, res: Response, next: NextFunction) => {
     try {
       const userId = req.user.userId;

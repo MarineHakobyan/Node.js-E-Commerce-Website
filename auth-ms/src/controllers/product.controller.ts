@@ -1,14 +1,14 @@
 import { ProductService } from '../services/product.service';
-import { ProductEntity } from '../orm/entities/product.entity';
-import { Product } from '../models/Product';
+import { Product } from '../orm/entities/product.entity';
+import { ProductOutputDto } from '../dtos/product.output.dto';
 
 export class ProductController {
   private productService = new ProductService();
 
   async createProduct(
     userId: number,
-    productData: Product,
-  ): Promise<ProductEntity> {
+    productData: ProductOutputDto,
+  ): Promise<ProductOutputDto> {
     const product = await this.productService.createProduct(
       userId,
       productData,
@@ -46,6 +46,7 @@ export class ProductController {
       productId,
       productData,
     );
+
     return product;
   }
 

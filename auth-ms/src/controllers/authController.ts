@@ -2,6 +2,8 @@ import { comparePassword } from '../utils/authUtils';
 import { LoginDto, UserRegistrationDto } from '../dtos';
 import { AuthService } from '../services/auth.service';
 import { UserService } from '../services/user.service';
+import { User } from '../orm/entities/user.entity';
+import { UserOutputDto } from '../dtos/user.output.dto';
 
 const authService = new AuthService();
 const userService = new UserService();
@@ -15,7 +17,11 @@ export class AuthController {
     return authService.login(user);
   }
 
-  async updatePassword(id: number, oldPassword: string, newPassword: string) {
+  async updatePassword(
+    id: number,
+    oldPassword: string,
+    newPassword: string,
+  ): Promise<UserOutputDto> {
     try {
       const user = await userService.getOne(id);
 

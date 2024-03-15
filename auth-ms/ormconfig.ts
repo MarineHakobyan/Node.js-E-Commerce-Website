@@ -31,8 +31,7 @@ export default [
     migrations: [`./src/orm/seeds/**/*.seed{.ts,.js}`],
     entities: [`./src/orm/entities/**/*.entity{.ts,.js}`],
     cli: {
-      migrationsDir: `./src/orm/seeds`,
-      entitiesDir: `./src/orm/entities`
+      migrationsDir: `./src/orm/seeds`
     },
     namingStrategy: new SnakeNamingStrategy(),
   }

@@ -1,22 +1,22 @@
 import { createConnection, getRepository, Repository } from 'typeorm';
 
-import { ProductEntity } from '../orm/entities/product.entity';
-import { UserEntity } from '../orm/entities/user.entity';
-import { ormConfig } from '../config';
-import { CartEntity } from '../orm/entities/cart.entity';
+import { Product } from '../orm/entities/product.entity';
+import { User } from '../orm/entities/user.entity';
+import { dbConfig } from '../config';
+import { Cart } from '../orm/entities/cart.entity';
 
 export class ProductService {
-  private productRepository: Repository<ProductEntity>;
-  private userRepository: Repository<UserEntity>;
-  private cartRepository: Repository<CartEntity>;
+  private productRepository: Repository<Product>;
+  private userRepository: Repository<User>;
+  private cartRepository: Repository<Cart>;
 
   constructor() {
     (async () => {
       try {
-        const dbConnection = await createConnection(ormConfig);
-        this.userRepository = dbConnection.getRepository(UserEntity);
-        this.productRepository = dbConnection.getRepository(ProductEntity);
-        this.cartRepository = dbConnection.getRepository(CartEntity);
+        const dbConnection = await createConnection(dbConfig);
+        this.userRepository = dbConnection.getRepository(User);
+        this.productRepository = dbConnection.getRepository(Product);
+        this.cartRepository = dbConnection.getRepository(Cart);
       } catch (error) {
         console.error('Initialization failed:', error);
       }
@@ -25,7 +25,7 @@ export class ProductService {
 
   async createProduct(userId: number, productData: any) {
     try {
-      return this.productRepository.save({ ...productData, authorId: userId });
+      return this.productRepository.save({ ...productData, ownerId: userId });
     } catch (err) {
       throw new Error('Failed to create the product');
     }
@@ -41,12 +41,13 @@ export class ProductService {
 
   async addToCart(userId: number, productId: number) {
     try {
+      console.log('1111111111111111111');
       const cartItem = await this.getCartItem(userId, productId);
-
+      console.log('2222222222222222222');
       if (cartItem) {
         await this.cartRepository
           .createQueryBuilder()
-          .update(CartEntity)
+          .update(Cart)
           .set({ quantity: () => 'quantity + 1' })
           .where('userId = :userId', { userId })
           .andWhere('productId = :productId', { productId })
@@ -73,21 +74,23 @@ export class ProductService {
     try {
       const cartItems = await this.cartRepository.find({
         where: { userId },
-        relations: ['product'],
       });
 
       return cartItems;
     } catch (err) {
+      console.log(err, userId, 'topolya');
       throw new Error('Failed to fetch cart items');
     }
   }
 
   async getCartItem(userId: number, productId: number) {
     try {
-      return this.cartRepository.findOne({
-        where: { userId, productId },
-        relations: ['product'],
-      });
+      return this.cartRepository
+        .createQueryBuilder('cart')
+        .leftJoinAndSelect('cart.product', 'product')
+        .where('cart.userId = :userId', { userId })
+        .andWhere('product.id = :productId', { productId })
+        .getMany();
     } catch (err) {
       throw new Error('Failed to get cart item');
     }

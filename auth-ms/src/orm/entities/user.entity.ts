@@ -1,9 +1,8 @@
 import {Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToMany, JoinTable} from 'typeorm';
-import {ProductEntity} from "./product.entity";
-import {CartEntity} from "./cart.entity";
+import {Cart} from "./cart.entity";
 
-@Entity('users')
-export class UserEntity {
+@Entity()
+export class User {
     @PrimaryGeneratedColumn()
     id: number;
 
@@ -16,7 +15,10 @@ export class UserEntity {
     @Column({ type: 'varchar'})
     password: string;
 
-    @OneToMany(() => CartEntity, (cart) => cart.user, { cascade: true })
-    @JoinTable({name: 'user-products'})
-    cart: CartEntity[];
+    // #region Relations
+
+    @OneToMany(() => Cart, (cart) => cart.user, { cascade: true })
+    carts: Cart[];
+
+    // #endregion
 }

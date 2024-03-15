@@ -1,10 +1,10 @@
-import { User } from '../../models/userModel';
 import {Request} from "express";
 import {UserUpdateOptionalDataDto} from "../../dtos";
+import {User} from "../../orm/entities/user.entity";
 
 export type TUser = Omit<
   User,
-  'password' | 'hashPasswordBeforeInsert' | 'validatePassword'
+  'password'
 >;
 
 export type TUserTokenDecoded = {

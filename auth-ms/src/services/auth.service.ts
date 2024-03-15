@@ -1,27 +1,27 @@
 import { createConnection, getRepository, Repository } from 'typeorm';
 import bcrypt from 'bcrypt';
 
-import { UserEntity } from '../orm/entities/user.entity';
-import { User } from '../models/userModel';
+import { User } from '../orm/entities/user.entity';
 import { LoginDto } from '../dtos';
 import { generateToken } from '../utils/authUtils';
-import { ormConfig, authConfig } from '../config';
+import { dbConfig } from '../config';
+import { UserOutputDto } from '../dtos/user.output.dto';
 
 export class AuthService {
-  private userRepository: Repository<UserEntity>;
+  private userRepository: Repository<User>;
 
   constructor() {
     (async () => {
       try {
-        const dbConnection = await createConnection(ormConfig);
-        this.userRepository = dbConnection.getRepository(UserEntity);
+        const dbConnection = await createConnection(dbConfig);
+        this.userRepository = dbConnection.getRepository(User);
       } catch (error) {
         console.error('Initialization failed:', error);
       }
     })();
   }
 
-  async register(userData: any): Promise<Omit<UserEntity, 'password'>> {
+  async register(userData: any): Promise<Omit<User, 'password'>> {
     try {
       const existingUser = await this.userRepository.findOne({
         where: { email: userData.email },
@@ -33,7 +33,7 @@ export class AuthService {
 
       const hashedPassword = await bcrypt.hash(userData.password, 10);
 
-      const newUser = new UserEntity();
+      const newUser = new User();
       newUser.username = userData.username;
       newUser.email = userData.email;
       newUser.password = hashedPassword;
@@ -48,7 +48,7 @@ export class AuthService {
     }
   }
 
-  async login(loginData: LoginDto): Promise<User> {
+  async login(loginData: LoginDto): Promise<UserOutputDto> {
     try {
       const x = await this.userRepository.find();
       const user = await this.userRepository.findOne({
@@ -86,9 +86,12 @@ export class AuthService {
     }
   }
 
-  async updatePassword(id: number, password: string): Promise<UserEntity> {
+  async updatePassword(
+    id: number,
+    newPassword: string,
+  ): Promise<UserOutputDto> {
     try {
-      const hashedPassword = await bcrypt.hash(password, 10);
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
 
       await this.userRepository.update(id, { password: hashedPassword });
       const updated = await this.userRepository.findOne(id);
@@ -97,7 +100,9 @@ export class AuthService {
         throw new Error('Failed to update User');
       }
 
-      return updated;
+      const { password, ...data } = updated;
+
+      return data;
     } catch (error) {
       throw new Error('User update failed.');
     }

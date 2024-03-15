@@ -3,11 +3,7 @@ import { NextFunction, Request, Response } from 'express';
 
 import { handleAsync } from '../common/helpers';
 import { AuthController } from '../controllers/authController';
-import {
-  LoginDto,
-  UpdatePasswordDto,
-  UserRegistrationDto,
-} from '../dtos/user.input.dto';
+import { LoginDto, UserRegistrationDto } from '../dtos/user.input.dto';
 import {
   userRegistrationSchema,
   loginSchema,
@@ -52,9 +48,8 @@ AuthRouter.put(
         req.body.oldPassword,
         req.body.newPassword,
       );
-      const { password, ...data } = result;
 
-      res.status(200).json(data);
+      res.status(200).json(result);
     },
   ),
 );

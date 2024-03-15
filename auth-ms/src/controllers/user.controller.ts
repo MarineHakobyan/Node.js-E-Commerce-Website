@@ -1,12 +1,13 @@
-import { UserEntity } from '../orm/entities/user.entity';
+import { User } from '../orm/entities/user.entity';
 import { UserService } from '../services/user.service';
 import { TUser } from '../common/types/user.types';
 import { UserUpdateOptionalDataDto } from '../dtos';
+import { UserOutputDto } from '../dtos/user.output.dto';
 
 export class UserController {
   private userService = new UserService();
 
-  async getOne(id: number): Promise<Omit<UserEntity, 'password'>> {
+  async getOne(id: number): Promise<Omit<User, 'password'>> {
     try {
       const user = await this.userService.getOne(id);
 
@@ -25,7 +26,7 @@ export class UserController {
   async updateOne(
     id: number,
     data: UserUpdateOptionalDataDto,
-  ): Promise<Omit<UserEntity, 'password'>> {
+  ): Promise<UserOutputDto> {
     try {
       const patchedUser = await this.userService.updateOne(id, data);
 
@@ -33,9 +34,7 @@ export class UserController {
         throw new Error();
       }
 
-      const { password, ...result } = patchedUser;
-
-      return result;
+      return patchedUser;
     } catch (error) {
       throw new Error('Failed to update the user');
     }

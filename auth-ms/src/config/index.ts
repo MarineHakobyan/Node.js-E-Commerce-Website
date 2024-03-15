@@ -1,3 +1,3 @@
 export * from './appConfig';
-export * from './ormConfig';
+export * from './dbConfig';
 export * from './auth.config';

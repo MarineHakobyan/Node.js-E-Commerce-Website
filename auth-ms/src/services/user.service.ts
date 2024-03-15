@@ -1,24 +1,25 @@
 import { createConnection, Repository } from 'typeorm';
 
-import { UserEntity } from '../orm/entities/user.entity';
+import { User } from '../orm/entities/user.entity';
 import { UserUpdateOptionalDataDto } from '../dtos';
-import { ormConfig } from '../config';
+import { dbConfig } from '../config';
+import { UserOutputDto } from '../dtos/user.output.dto';
 
 export class UserService {
-  private userRepository: Repository<UserEntity>;
+  private userRepository: Repository<User>;
 
   constructor() {
     (async () => {
       try {
-        const dbConnection = await createConnection(ormConfig);
-        this.userRepository = dbConnection.getRepository(UserEntity);
+        const dbConnection = await createConnection(dbConfig);
+        this.userRepository = dbConnection.getRepository(User);
       } catch (error) {
         console.error('Initialization failed:', error);
       }
     })();
   }
 
-  async getOne(id: number): Promise<UserEntity | undefined> {
+  async getOne(id: number): Promise<User | undefined> {
     try {
       return this.userRepository.findOne(id);
     } catch (error) {
@@ -29,15 +30,18 @@ export class UserService {
   async updateOne(
     id: number,
     data: UserUpdateOptionalDataDto,
-  ): Promise<UserEntity> {
+  ): Promise<UserOutputDto> {
     try {
-      const result = await this.userRepository.update(id, data);
+      const UpdatedResult = await this.userRepository.update(id, data);
 
-      if (!result.affected) {
+      if (!UpdatedResult.affected) {
         throw new Error('No data has changed');
       }
 
-      return this.userRepository.findOneOrFail(id);
+      const user = await this.userRepository.findOneOrFail(id);
+      const { password, ...result } = user;
+
+      return result;
     } catch (error) {
       throw new Error('User update failed');
     }

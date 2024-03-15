@@ -1,9 +1,7 @@
 import * as jwt from 'jsonwebtoken';
 import * as bcrypt from 'bcrypt';
 
-import { appConfig } from '../config/appConfig';
 import { authConfig } from '../config';
-import { User } from '../models/userModel';
 
 export async function hashPassword(password: string): Promise<string> {
   const saltRounds = 10;
