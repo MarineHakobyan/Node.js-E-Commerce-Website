@@ -1,11 +1,16 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import {Entity, PrimaryGeneratedColumn, Column, ManyToOne, ManyToMany, JoinTable, Index, OneToOne} from 'typeorm';
 import { CategoryEnum } from "../../common/enums/productCategory.enum";
 import { UserEntity } from "./user.entity";
+import {CartEntity} from "./cart.entity";
 
 @Entity('products')
+@Index(['authorId'])
 export class ProductEntity {
     @PrimaryGeneratedColumn()
     id: number;
+
+    @Column({ type: 'int' })
+    authorId: number;
 
     @Column({ type: 'varchar' })
     title: string;
@@ -32,6 +37,6 @@ export class ProductEntity {
     @Column({ nullable: true, type: 'varchar' })
     material: string | null;
 
-    // @ManyToOne(() => UserEntity, (user) => user.products)
-    // user: UserEntity | null;
+    @OneToOne(() => CartEntity, (cart) => cart.product)
+    cart: CartEntity | null;
 }

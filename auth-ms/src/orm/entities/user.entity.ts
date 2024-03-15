@@ -1,4 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import {Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToMany, JoinTable} from 'typeorm';
+import {ProductEntity} from "./product.entity";
+import {CartEntity} from "./cart.entity";
 
 @Entity('users')
 export class UserEntity {
@@ -14,6 +16,7 @@ export class UserEntity {
     @Column({ type: 'varchar'})
     password: string;
 
-    // @OneToMany(() => ProductEntity, (product) => product.user, { cascade: true }) // Optional: cascade deletion of products on user deletion
-    // products: ProductEntity[];
+    @OneToMany(() => CartEntity, (cart) => cart.user, { cascade: true })
+    @JoinTable({name: 'user-products'})
+    cart: CartEntity[];
 }

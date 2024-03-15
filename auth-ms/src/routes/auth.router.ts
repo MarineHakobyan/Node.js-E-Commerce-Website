@@ -7,7 +7,7 @@ import {
   LoginDto,
   UpdatePasswordDto,
   UserRegistrationDto,
-} from '../dtos/user.dto';
+} from '../dtos/user.input.dto';
 import {
   userRegistrationSchema,
   loginSchema,

@@ -1,7 +1,7 @@
 import { NextFunction, Response } from 'express';
-import {TReqWithProductId} from "../common/types/product.types";
+import { TReqWithProductId } from '../common/types/product.types';
 
-export function transformProductId(
+export function parseProductIdParam(
   req: TReqWithProductId,
   res: Response,
   next: NextFunction,
