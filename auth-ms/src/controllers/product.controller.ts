@@ -1,5 +1,5 @@
 import { ProductService } from '../services/product.service';
-import { ProductEntity } from '../orm/entities/product.entity';
+import { Product } from '../orm/entities/product.entity';
 import { Product } from '../models/Product';
 
 export class ProductController {
@@ -8,7 +8,7 @@ export class ProductController {
   async createProduct(
     userId: number,
     productData: Product,
-  ): Promise<ProductEntity> {
+  ): Promise<Product> {
     const product = await this.productService.createProduct(
       userId,
       productData,

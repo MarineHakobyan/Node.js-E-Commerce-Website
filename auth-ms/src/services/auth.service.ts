@@ -1,27 +1,27 @@
 import { createConnection, getRepository, Repository } from 'typeorm';
 import bcrypt from 'bcrypt';
 
-import { UserEntity } from '../orm/entities/user.entity';
+import { User } from '../orm/entities/user';
 import { User } from '../models/userModel';
 import { LoginDto } from '../dtos';
 import { generateToken } from '../utils/authUtils';
 import { ormConfig, authConfig } from '../config';
 
 export class AuthService {
-  private userRepository: Repository<UserEntity>;
+  private userRepository: Repository<User>;
 
   constructor() {
     (async () => {
       try {
         const dbConnection = await createConnection(ormConfig);
-        this.userRepository = dbConnection.getRepository(UserEntity);
+        this.userRepository = dbConnection.getRepository(User);
       } catch (error) {
         console.error('Initialization failed:', error);
       }
     })();
   }
 
-  async register(userData: any): Promise<Omit<UserEntity, 'password'>> {
+  async register(userData: any): Promise<Omit<User, 'password'>> {
     try {
       const existingUser = await this.userRepository.findOne({
         where: { email: userData.email },
@@ -33,7 +33,7 @@ export class AuthService {
 
       const hashedPassword = await bcrypt.hash(userData.password, 10);
 
-      const newUser = new UserEntity();
+      const newUser = new User();
       newUser.username = userData.username;
       newUser.email = userData.email;
       newUser.password = hashedPassword;
@@ -56,7 +56,7 @@ export class AuthService {
       });
 
       if (!user) {
-        throw new Error('User not found');
+        throw new Error('UserEntity not found');
       }
 
       const passwordMatch = await bcrypt.compare(
@@ -86,7 +86,7 @@ export class AuthService {
     }
   }
 
-  async updatePassword(id: number, password: string): Promise<UserEntity> {
+  async updatePassword(id: number, password: string): Promise<User> {
     try {
       const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -94,12 +94,12 @@ export class AuthService {
       const updated = await this.userRepository.findOne(id);
 
       if (!updated) {
-        throw new Error('Failed to update User');
+        throw new Error('Failed to update UserEntity');
       }
 
       return updated;
     } catch (error) {
-      throw new Error('User update failed.');
+      throw new Error('UserEntity update failed.');
     }
   }
 }

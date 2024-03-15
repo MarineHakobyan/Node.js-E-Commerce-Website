@@ -1,16 +1,15 @@
 import {Entity, PrimaryGeneratedColumn, Column, ManyToOne, ManyToMany, JoinTable, Index, OneToOne} from 'typeorm';
 import { CategoryEnum } from "../../common/enums/productCategory.enum";
-import { UserEntity } from "./user.entity";
-import {CartEntity} from "./cart.entity";
-
-@Entity('products')
-@Index(['authorId'])
-export class ProductEntity {
+// ]import {CartEntity} from "./cart.entity";
+//
+@Entity()
+@Index(['ownerId'])
+export class Product {
     @PrimaryGeneratedColumn()
     id: number;
 
     @Column({ type: 'int' })
-    authorId: number;
+    ownerId: number;
 
     @Column({ type: 'varchar' })
     title: string;
@@ -37,6 +36,10 @@ export class ProductEntity {
     @Column({ nullable: true, type: 'varchar' })
     material: string | null;
 
-    @OneToOne(() => CartEntity, (cart) => cart.product)
-    cart: CartEntity | null;
+    // #region Relations
+
+    // @OneToOne(() => CartEntity, (cart) => cart.product)
+    // cart: CartEntity | null;
+
+    // #endregion
 }

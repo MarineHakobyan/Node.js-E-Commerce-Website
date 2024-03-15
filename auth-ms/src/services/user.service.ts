@@ -1,35 +1,35 @@
 import { createConnection, Repository } from 'typeorm';
 
-import { UserEntity } from '../orm/entities/user.entity';
+import { User } from '../orm/entities/user';
 import { UserUpdateOptionalDataDto } from '../dtos';
 import { ormConfig } from '../config';
 
 export class UserService {
-  private userRepository: Repository<UserEntity>;
+  private userRepository: Repository<User>;
 
   constructor() {
     (async () => {
       try {
         const dbConnection = await createConnection(ormConfig);
-        this.userRepository = dbConnection.getRepository(UserEntity);
+        this.userRepository = dbConnection.getRepository(User);
       } catch (error) {
         console.error('Initialization failed:', error);
       }
     })();
   }
 
-  async getOne(id: number): Promise<UserEntity | undefined> {
+  async getOne(id: number): Promise<User | undefined> {
     try {
       return this.userRepository.findOne(id);
     } catch (error) {
-      throw new Error('User retrieval failed');
+      throw new Error('UserEntity retrieval failed');
     }
   }
 
   async updateOne(
     id: number,
     data: UserUpdateOptionalDataDto,
-  ): Promise<UserEntity> {
+  ): Promise<User> {
     try {
       const result = await this.userRepository.update(id, data);
 
@@ -39,7 +39,7 @@ export class UserService {
 
       return this.userRepository.findOneOrFail(id);
     } catch (error) {
-      throw new Error('User update failed');
+      throw new Error('UserEntity update failed');
     }
   }
 
@@ -49,7 +49,7 @@ export class UserService {
 
       return !!result.affected;
     } catch (error) {
-      throw new Error('User deletion failed.');
+      throw new Error('UserEntity deletion failed.');
     }
   }
 }

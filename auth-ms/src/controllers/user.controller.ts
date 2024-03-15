@@ -1,4 +1,4 @@
-import { UserEntity } from '../orm/entities/user.entity';
+import { User } from '../orm/entities/user';
 import { UserService } from '../services/user.service';
 import { TUser } from '../common/types/user.types';
 import { UserUpdateOptionalDataDto } from '../dtos';
@@ -6,12 +6,12 @@ import { UserUpdateOptionalDataDto } from '../dtos';
 export class UserController {
   private userService = new UserService();
 
-  async getOne(id: number): Promise<Omit<UserEntity, 'password'>> {
+  async getOne(id: number): Promise<Omit<User, 'password'>> {
     try {
       const user = await this.userService.getOne(id);
 
       if (!user) {
-        throw new Error('User not found');
+        throw new Error('UserEntity not found');
       }
 
       const { password, ...result } = user;
@@ -25,7 +25,7 @@ export class UserController {
   async updateOne(
     id: number,
     data: UserUpdateOptionalDataDto,
-  ): Promise<Omit<UserEntity, 'password'>> {
+  ): Promise<Omit<User, 'password'>> {
     try {
       const patchedUser = await this.userService.updateOne(id, data);
 

@@ -1,10 +1,11 @@
 import {Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, OneToOne, Index} from 'typeorm';
-import { ProductEntity } from './product.entity';
-import { UserEntity } from './user.entity';
+import {Product} from "./product.entity";
+import {User} from "./user.entity";
 
-@Entity('cart')
+
+@Entity()
 @Index(['userId'])
-export class CartEntity {
+export class Cart {
     @PrimaryGeneratedColumn()
     id: number;
 
@@ -17,9 +18,13 @@ export class CartEntity {
     @Column({ default: 1 })
     quantity: number;
 
-    @ManyToOne(() => UserEntity, user => user.cart)
-    user: UserEntity;
+    // #region Relations
 
-    @OneToOne(() => ProductEntity, product => product.cart)
-    product: ProductEntity;
+    // @ManyToOne(() => User, user => user.cart)
+    // user: User;
+    //
+    // @OneToOne(() => Product, product => product.cart)
+    // product: Product;
+
+    // #endregion
 }

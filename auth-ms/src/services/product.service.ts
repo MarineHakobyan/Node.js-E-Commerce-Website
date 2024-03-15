@@ -1,21 +1,21 @@
 import { createConnection, getRepository, Repository } from 'typeorm';
 
-import { ProductEntity } from '../orm/entities/product.entity';
-import { UserEntity } from '../orm/entities/user.entity';
+import { Product } from '../orm/entities/product.entity';
+import { User } from '../orm/entities/user';
 import { ormConfig } from '../config';
 import { CartEntity } from '../orm/entities/cart.entity';
 
 export class ProductService {
-  private productRepository: Repository<ProductEntity>;
-  private userRepository: Repository<UserEntity>;
+  private productRepository: Repository<Product>;
+  private userRepository: Repository<User>;
   private cartRepository: Repository<CartEntity>;
 
   constructor() {
     (async () => {
       try {
         const dbConnection = await createConnection(ormConfig);
-        this.userRepository = dbConnection.getRepository(UserEntity);
-        this.productRepository = dbConnection.getRepository(ProductEntity);
+        this.userRepository = dbConnection.getRepository(User);
+        this.productRepository = dbConnection.getRepository(Product);
         this.cartRepository = dbConnection.getRepository(CartEntity);
       } catch (error) {
         console.error('Initialization failed:', error);
@@ -78,6 +78,7 @@ export class ProductService {
 
       return cartItems;
     } catch (err) {
+      console.log(err, userId, 'topolya')
       throw new Error('Failed to fetch cart items');
     }
   }
@@ -117,7 +118,7 @@ export class ProductService {
     try {
       const result = await this.productRepository.delete(productId);
       if (!result.affected) {
-        throw new Error('Product not found or could not be deleted.');
+        throw new Error('ProductEntity not found or could not be deleted.');
       }
     } catch (err) {
       throw new Error('Failed to delete product');

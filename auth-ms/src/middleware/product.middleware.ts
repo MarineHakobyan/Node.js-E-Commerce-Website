@@ -9,7 +9,7 @@ export function parseProductIdParam(
   const { id } = req.params;
 
   if (id && !isNaN(Number(id))) {
-    next(new Error('Invalid Product ID: Must be a number'));
+    next(new Error('Invalid ProductEntity ID: Must be a number'));
   }
 
   req.productId = Number(id);

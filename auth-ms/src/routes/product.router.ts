@@ -122,7 +122,7 @@ ProductRouter.put(
       if (product) {
         res.json(product);
       } else {
-        res.status(404).json({ message: 'Product not found' });
+        res.status(404).json({ message: 'ProductEntity not found' });
       }
     } catch (error) {
       next(error);
@@ -135,7 +135,7 @@ ProductRouter.delete(
   async (req: TReqWithProductId, res: Response, next: NextFunction) => {
     await productController.deleteProduct(req.productId);
 
-    res.json({ message: 'Product deleted' });
+    res.json({ message: 'ProductEntity deleted' });
   },
 );
 
