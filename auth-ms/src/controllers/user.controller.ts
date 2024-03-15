@@ -1,6 +1,5 @@
 import { User } from '../orm/entities/user.entity';
 import { UserService } from '../services/user.service';
-import { TUser } from '../common/types/user.types';
 import { UserUpdateOptionalDataDto } from '../dtos';
 import { UserOutputDto } from '../dtos/user.output.dto';
 
