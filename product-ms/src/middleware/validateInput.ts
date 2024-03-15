@@ -12,11 +12,9 @@ export const validateRequest = (schema: Joi.ObjectSchema) => {
         res
           .status(400)
           .json({ error: 'Validation failed', details: error.details });
-      } else {
-        req.body = value;
-
-        next();
       }
+
+      next();
     } catch (err) {
       console.error(err);
 

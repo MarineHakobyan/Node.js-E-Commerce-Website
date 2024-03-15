@@ -5,7 +5,7 @@ import { jwtValidator } from '../middleware/jwtValidator';
 import { parseProductIdParam } from '../middleware/product.middleware';
 import {
   TReqWithProductId,
-  TReqWithProductPayload,
+  TReqWithProductPayloadAndId,
 } from '../common/types/product.types';
 import { validateRequest } from '../middleware/validateInput';
 import { createProductSchema } from '../schemas/createProduct.schema';
@@ -46,6 +46,7 @@ ProductRouter.get(
 );
 
 ProductRouter.post(
+  // here
   '/cart',
   validateRequest(addToCartSchema),
   jwtValidator,
@@ -62,7 +63,7 @@ ProductRouter.post(
 );
 
 ProductRouter.get(
-  '/cart',
+  '/cart', // here
   jwtValidator,
   async (req: TRequestWithToken, res: Response, next: NextFunction) => {
     try {
@@ -77,6 +78,7 @@ ProductRouter.get(
 );
 
 ProductRouter.delete(
+  // here
   '/cart',
   jwtValidator,
   parseProductIdParam,
@@ -93,7 +95,7 @@ ProductRouter.delete(
 );
 
 ProductRouter.get(
-  '/products/:id',
+  '/products/:id', // here
   jwtValidator,
   parseProductIdParam,
   async (req: TReqWithProductId, res: Response, next: NextFunction) => {
@@ -113,11 +115,19 @@ ProductRouter.put(
   '/products/:id',
   jwtValidator,
   parseProductIdParam,
-  async (req: TReqWithProductPayload, res: Response, next: NextFunction) => {
-    const { productId, payload } = req;
-
+  validateRequest(createProductSchema),
+  async (
+    req: TReqWithProductPayloadAndId,
+    res: Response,
+    next: NextFunction,
+  ) => {
+    const { productId, body } = req;
     try {
-      const product = await productController.updateProduct(productId, payload);
+      const product = await productController.updateProduct(
+        req.user.userId,
+        productId,
+        body,
+      );
 
       if (product) {
         res.json(product);
@@ -132,8 +142,10 @@ ProductRouter.put(
 
 ProductRouter.delete(
   '/products/:id',
+  jwtValidator,
+  parseProductIdParam,
   async (req: TReqWithProductId, res: Response, next: NextFunction) => {
-    await productController.deleteProduct(req.productId);
+    await productController.deleteProduct(req.user.userId, req.productId);
 
     res.json({ message: 'ProductEntity deleted' });
   },

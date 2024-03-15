@@ -1,6 +1,15 @@
-import {Entity, PrimaryGeneratedColumn, Column, ManyToOne, ManyToMany, JoinTable, Index, OneToOne} from 'typeorm';
+import {
+    Entity,
+    PrimaryGeneratedColumn,
+    Column,
+    ManyToOne,
+    Index,
+    OneToOne,
+    JoinColumn
+} from 'typeorm';
 import { CategoryEnum } from "../../common/enums/productCategory.enum";
 import {Cart} from "./cart.entity";
+import {User} from "./user.entity";
 
 @Entity()
 @Index(['ownerId'])
@@ -39,10 +48,15 @@ export class Product {
 
     // #region Relations
 
-    @OneToOne(
-        () => Cart,
-        (cart) => cart.product,
-    )
+    @ManyToOne(() => User, {
+        onDelete: 'CASCADE',
+    })
+    @JoinColumn({
+        name: 'user_id',
+    })
+    user?: User;
+
+    @OneToOne(() => Cart, (cart) => cart.product)
     cart?: Cart;
 
     // #endregion

@@ -1,5 +1,6 @@
-import {Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToMany, JoinTable} from 'typeorm';
+import {Entity, PrimaryGeneratedColumn, Column, OneToMany} from 'typeorm';
 import {Cart} from "./cart.entity";
+import {Product} from "./product.entity";
 
 @Entity()
 export class User {
@@ -19,6 +20,9 @@ export class User {
 
     @OneToMany(() => Cart, (cart) => cart.user)
     carts?: Cart[];
+
+    @OneToMany(() => Product, (product) => product.user)
+    products?: Product[];
 
     // #endregion
 }

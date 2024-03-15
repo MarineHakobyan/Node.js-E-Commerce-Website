@@ -41,8 +41,9 @@ export class ProductController {
     return products;
   }
 
-  async updateProduct(productId: number, productData: any) {
+  async updateProduct(userId: number, productId: number, productData: any) {
     const product = await this.productService.updateProduct(
+      userId,
       productId,
       productData,
     );
@@ -50,7 +51,7 @@ export class ProductController {
     return product;
   }
 
-  async deleteProduct(productId: number) {
-    await this.productService.deleteProduct(productId);
+  async deleteProduct(userId: number, productId: number) {
+    await this.productService.deleteProduct(userId, productId);
   }
 }
