@@ -20,11 +20,23 @@ export class Cart {
 
     // #region Relations
 
-    @ManyToOne(() => User, user => user.carts)
-    user: User;
+    @ManyToOne(() => User, {
+        onDelete: 'CASCADE',
+    })
+    @JoinColumn({
+        name: 'user_id',
+    })
+    user?: User;
 
-    @OneToOne(() => Product, (product) => product.cart)
-    product:Product
+    @OneToOne(
+        () => Product,
+        (product) => product.cart,
+        {
+            onDelete: 'CASCADE',
+        },
+    )
+    @JoinColumn()
+    product?: Product;
 
     // #endregion
 }

@@ -38,8 +38,12 @@ export class Product {
 
 
     // #region Relations
-    @OneToOne(() => Cart, (cart) => cart.product)
-    cart:Cart
+
+    @OneToOne(
+        () => Cart,
+        (cart) => cart.product,
+    )
+    cart?: Cart;
 
     // #endregion
 }

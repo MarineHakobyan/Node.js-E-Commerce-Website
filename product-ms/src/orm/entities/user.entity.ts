@@ -17,8 +17,8 @@ export class User {
 
     // #region Relations
 
-    @OneToMany(() => Cart, (cart) => cart.user, { cascade: true })
-    carts: Cart[];
+    @OneToMany(() => Cart, (cart) => cart.user)
+    carts?: Cart[];
 
     // #endregion
 }
