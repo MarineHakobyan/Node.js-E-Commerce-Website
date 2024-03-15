@@ -1,5 +1,13 @@
 # Quick Start Guide
 
+## Current Status
+
+<font color="green">
+
+#### 🚀 Currently working on adding products service and separating it from auth-microservice.
+
+</font>
+
 ## Main Node Environment: Node 16.13.1
 
 ## 1. Go to project and Copy Environment Variables
