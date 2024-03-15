@@ -2,7 +2,7 @@ FROM node:16.13.1-alpine AS builder
 WORKDIR /app
 COPY package*.json ./
 RUN npm install
-COPY . .
+COPY auth-ms .
 FROM node:16.13.1-alpine
 COPY --from=builder /app/node_modules /app/node_modules
 COPY --from=builder /app/src /app/src

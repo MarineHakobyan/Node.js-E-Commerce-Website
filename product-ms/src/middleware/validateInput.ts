@@ -7,7 +7,7 @@ export const validateRequest = (schema: Joi.ObjectSchema) => {
       const { error, value } = schema.validate(req.body, {
         abortEarly: false,
       });
-      console.dir({ error, value }, { depth: null });
+
       if (error) {
         res
           .status(400)

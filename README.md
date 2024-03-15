@@ -16,7 +16,7 @@ docker-compose up -d postgres
 
 ## 3. Create Database
 ```bash
-docker exec -it $(docker-compose ps -q postgres) psql -d builderpad
+docker exec -it $(docker-compose ps -q postgres) psql -d user-db
 ```
 
 ## 4. Install Dependencies and Build

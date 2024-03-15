@@ -1,1 +1,1 @@
-export * from './user.input.dto';
+export * from './product.output.dto';

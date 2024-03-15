@@ -41,9 +41,8 @@ export class ProductService {
 
   async addToCart(userId: number, productId: number) {
     try {
-      console.log('1111111111111111111');
       const cartItem = await this.getCartItem(userId, productId);
-      console.log('2222222222222222222');
+
       if (cartItem) {
         await this.cartRepository
           .createQueryBuilder()
@@ -78,7 +77,6 @@ export class ProductService {
 
       return cartItems;
     } catch (err) {
-      console.log(err, userId, 'topolya');
       throw new Error('Failed to fetch cart items');
     }
   }
