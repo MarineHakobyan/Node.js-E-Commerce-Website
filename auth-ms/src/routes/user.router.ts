@@ -5,25 +5,30 @@ import { UserController } from '../controllers/user.controller';
 import { jwtValidator } from '../middleware/jwtValidator';
 import { UserUpdateOptionalDataDto } from '../dtos';
 import {
-  TRequestWithToken,
-  TUpdateUserRequest,
+    TRequestWithToken, TRequestWithUserId,
+    TUpdateUserRequest,
 } from '../common/types/user.types';
 import { validateRequest } from '../middleware/validateInput';
 import { userUpdateOptionalSchema, userUpdateAllSchema } from '../schemas';
 import { UserOutputDto } from '../dtos/user.output.dto';
+import {parseUserIdParam} from "../middleware/parseUserIdParam";
 
 const userController = new UserController();
 const UserRouter = express.Router();
 
 UserRouter.get(
-  '/user',
+  '/user/:id',
   jwtValidator,
-  handleAsync(async (req: TRequestWithToken, res: Response) => {
-    const userId = req.user.userId;
-    const user = await userController.getOne(userId);
-    const data = transformResponseBody(UserOutputDto, user);
+  parseUserIdParam,
+  handleAsync(async (req: TRequestWithUserId, res: Response) => {
+    const userId = req.userId;
 
-    res.status(200).send({ data });
+      console.log({userId})
+    // const user = await userController.getOne(userId);
+    // const data = transformResponseBody(UserOutputDto, user);
+
+    throw new Error('topolya~')
+    // res.status(200).send({ data });
   }),
 );
 

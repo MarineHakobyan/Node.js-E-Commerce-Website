@@ -1,6 +1,11 @@
 import {Request} from "express";
 import {UserUpdateOptionalDataDto} from "../../dtos";
-import {User} from "../../orm/entities/user.entity";
+
+export type TUserId = {
+    userId: number,
+}
+
+export type TReqWithUserId = Request & TUserId
 
 export type TUserTokenDecoded = {
     userId: number,
@@ -11,6 +16,8 @@ export type TUserTokenDecoded = {
 export type TRequestWithToken = Request & {
     user: TUserTokenDecoded
 }
+
+export type TRequestWithUserId = Request & TUserId
 
 export type TUpdateUserRequest = UserUpdateOptionalDataDto & TRequestWithToken
 

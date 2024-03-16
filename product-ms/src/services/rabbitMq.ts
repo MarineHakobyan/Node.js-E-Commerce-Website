@@ -1,4 +1,5 @@
 import amqp from 'amqplib/callback_api';
+import { RabbitMessage } from '../common/interfaces/amqp.interfaces';
 
 interface Message {
   [key: string]: string;
@@ -70,6 +71,28 @@ export class RabbitMQClient {
     this.channel.consume(queue, (msg) => {
       const message = msg ? JSON.parse(msg?.content.toString()) : null;
       handler(message);
+    });
+  }
+
+  async sendAndReceive(
+    message: RabbitMessage,
+    queue: string,
+  ): Promise<Message> {
+    await this.ensureConnection();
+
+    if (!this.channel) {
+      throw new Error('RabbitMQ channel not available');
+    }
+
+    return new Promise((resolve, reject) => {
+      this.channel!.sendToQueue(queue, Buffer.from(JSON.stringify(message)), {
+        persistent: true,
+      });
+
+      this.channel!.consume(queue, (msg) => {
+        const receivedMessage = msg ? JSON.parse(msg.content.toString()) : null;
+        resolve(receivedMessage);
+      });
     });
   }
 }

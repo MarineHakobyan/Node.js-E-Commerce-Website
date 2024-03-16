@@ -2,17 +2,20 @@ import { createConnection, Repository } from 'typeorm';
 
 import { Product } from '../orm/entities/product.entity';
 import { User } from '../orm/entities/user.entity';
-import { dbConfig } from '../config';
+import { appConfig, dbConfig } from '../config';
+import { RabbitMQClient } from './rabbitMq';
+import { RabbitMessage } from '../common/interfaces/amqp.interfaces';
 
 export class ProductService {
   private productRepository: Repository<Product>;
-  private userRepository: Repository<User>;
+  private rabbitMQClient: RabbitMQClient;
 
   constructor() {
     (async () => {
       try {
+        this.rabbitMQClient = new RabbitMQClient(appConfig.amqpUrl);
+
         const dbConnection = await createConnection(dbConfig);
-        this.userRepository = dbConnection.getRepository(User);
         this.productRepository = dbConnection.getRepository(Product);
       } catch (error) {
         console.error('Initialization failed:', error);
@@ -22,7 +25,15 @@ export class ProductService {
 
   async createProduct(userId: number, productData: any) {
     try {
-      const foundUser = await this.userRepository.findOneOrFail(userId);
+      const message: RabbitMessage = {
+        method: 'GET',
+        url: '/user',
+        body: { userId },
+      };
+      const foundUser = await this.rabbitMQClient.sendAndReceive(
+        message,
+        appConfig.userQueue,
+      );
       const { user, ...savedProduct } = await this.productRepository.save({
         ...productData,
         ownerId: userId,
