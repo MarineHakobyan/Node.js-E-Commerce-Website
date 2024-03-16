@@ -4,7 +4,7 @@ import amqp from 'amqplib/callback_api';
     [key: string]: string;
 }
 
- class RabbitMQ {
+ export class RabbitMQClient {
     private readonly amqpUrl: string;
     private connection?: amqp.Connection;
     private channel?: amqp.Channel;

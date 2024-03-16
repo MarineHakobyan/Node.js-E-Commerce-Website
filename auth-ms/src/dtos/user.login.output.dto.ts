@@ -1,3 +1,3 @@
 export class UserLoginOutputDto {
-  token: string
+  token: string;
 }

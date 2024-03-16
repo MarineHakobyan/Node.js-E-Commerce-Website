@@ -1,38 +1,37 @@
 import { Request, Response, NextFunction } from 'express';
-import {DTOData} from "./types/user.types";
-import {ObjectLiteral} from "typeorm";
+import { ObjectLiteral } from 'typeorm';
+import { DTOData } from './types/user.types';
 
 export const handleAsync =
-  (fn: Function) =>
-  (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    return Promise.resolve(fn(req, res, next)).catch(next);
-  };
-
+    (fn: Function) =>
+        (req: Request, res: Response, next: NextFunction): Promise<void> => {
+          return fn(req, res, next).catch(next);
+        };
 
 const transformToDTO = <T extends ObjectLiteral, U extends ObjectLiteral>(
-    dtoClass: new () => T,
-    rawResponse: U,
+  dtoClass: new () => T,
+  rawResponse: U,
 ): T => {
-    const dto = new dtoClass();
-    Object.assign(dto, rawResponse);
+  const dto = new dtoClass();
+  Object.assign(dto, rawResponse);
 
-    return dto;
+  return dto;
 };
 
 export const transformResponseBody = <
-    T extends ObjectLiteral,
-    U extends ObjectLiteral,
+  T extends ObjectLiteral,
+  U extends ObjectLiteral,
 >(
-    dtoClass: new () => T,
-    rawResponse: U | U[],
+  dtoClass: new () => T,
+  rawResponse: U | U[],
 ): DTOData<T> => {
-    if (!Array.isArray(rawResponse)) {
-        return { data: transformToDTO(dtoClass, rawResponse) };
-    }
+  if (!Array.isArray(rawResponse)) {
+    return { data: transformToDTO(dtoClass, rawResponse) };
+  }
 
-    const data = rawResponse.map((item: U) => {
-        return transformToDTO(dtoClass, item);
-    });
+  const data = rawResponse.map((item: U) => {
+    return transformToDTO(dtoClass, item);
+  });
 
-    return { data };
+  return { data };
 };

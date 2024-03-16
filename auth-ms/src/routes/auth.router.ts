@@ -1,7 +1,7 @@
 import * as express from 'express';
 import { Request, Response } from 'express';
 
-import {handleAsync, transformResponseBody} from '../common/helpers';
+import { handleAsync, transformResponseBody } from '../common/helpers';
 import { AuthController } from '../controllers/authController';
 import { LoginDto, UserRegistrationDto } from '../dtos/user.input.dto';
 import {
@@ -12,8 +12,8 @@ import {
 import { validateRequest } from '../middleware/validateInput';
 import { jwtValidator } from '../middleware/jwtValidator';
 import { TRequestWithToken } from '../common/types/user.types';
-import {UserOutputDto} from "../dtos/user.output.dto";
-import {UserLoginOutputDto} from "../dtos/user.login.output.dto";
+import { UserOutputDto } from '../dtos/user.output.dto';
+import { UserLoginOutputDto } from '../dtos/user.login.output.dto';
 
 const authController = new AuthController();
 const AuthRouter = express.Router();
@@ -44,17 +44,15 @@ AuthRouter.put(
   '/auth/password',
   jwtValidator,
   validateRequest(updatePasswordSchema),
-  handleAsync(
-    async (req: TRequestWithToken, res: Response) => {
-      const result = await authController.updatePassword(
-        req.user.userId,
-        req.body.oldPassword,
-        req.body.newPassword,
-      );
+  handleAsync(async (req: TRequestWithToken, res: Response) => {
+    const result = await authController.updatePassword(
+      req.user.userId,
+      req.body.oldPassword,
+      req.body.newPassword,
+    );
 
-      res.status(200).send(transformResponseBody(UserOutputDto, result));
-    },
-  ),
+    res.status(200).send(transformResponseBody(UserOutputDto, result));
+  }),
 );
 
 export { AuthRouter };

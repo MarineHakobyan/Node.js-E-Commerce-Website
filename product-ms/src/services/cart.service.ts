@@ -1,9 +1,10 @@
-import { createConnection, getRepository, Repository } from 'typeorm';
+import { createConnection, Repository } from 'typeorm';
 
 import { Product } from '../orm/entities/product.entity';
-import { User } from '../orm/entities/user.entity';
-import { dbConfig } from '../config';
 import { Cart } from '../orm/entities/cart.entity';
+import { User } from '../orm/entities/user.entity';
+import { dbConfig} from '../config';
+
 
 export class CartService {
   private productRepository: Repository<Product>;
@@ -23,7 +24,7 @@ export class CartService {
     })();
   }
 
-  async createProduct(userId: number, productData: any) {
+  async createProduct(userId: number, productData: any):Promise<Product> {
     try {
       const foundUser = await this.userRepository.findOneOrFail(userId);
       const { user, ...savedProduct } = await this.productRepository.save({

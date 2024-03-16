@@ -1,6 +1,5 @@
 import express, { Request, Response, NextFunction } from 'express';
 import dotenv from 'dotenv';
-
 dotenv.config();
 require('express-async-errors');
 

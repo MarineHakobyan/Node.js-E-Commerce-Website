@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import * as Joi from 'joi';
+import Joi from 'joi';
 
 export const validateRequest = (schema: Joi.ObjectSchema) => {
   return async (req: Request, res: Response, next: NextFunction) => {

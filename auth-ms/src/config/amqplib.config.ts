@@ -1,4 +1,4 @@
-export const amqlibConfig = {
+export const amqplibConfig = {
   compilerOptions: {
     target: 'es5',
     module: 'commonjs',

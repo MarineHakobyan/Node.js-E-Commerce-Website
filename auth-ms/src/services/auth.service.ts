@@ -1,4 +1,4 @@
-import { createConnection, getRepository, Repository } from 'typeorm';
+import { createConnection, Repository } from 'typeorm';
 import bcrypt from 'bcrypt';
 
 import { User } from '../orm/entities/user.entity';
@@ -6,7 +6,7 @@ import { LoginDto } from '../dtos';
 import { generateToken } from '../utils/authUtils';
 import { dbConfig } from '../config';
 import { UserOutputDto } from '../dtos/user.output.dto';
-import {UserLoginOutputDto} from "../dtos/user.login.output.dto";
+import { UserLoginOutputDto } from '../dtos/user.login.output.dto';
 
 export class AuthService {
   private userRepository: Repository<User>;
@@ -71,7 +71,7 @@ export class AuthService {
 
       const token = generateToken(user.id);
 
-      return {token};
+      return { token };
     } catch (error) {
       console.error(error);
       if (error.message === 'Invalid login or password') {

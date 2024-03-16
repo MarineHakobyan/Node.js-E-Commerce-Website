@@ -4,7 +4,7 @@ interface Message {
   [key: string]: string;
 }
 
-class RabbitMQ {
+export class RabbitMQClient {
   private readonly amqpUrl: string;
   private connection?: amqp.Connection;
   private channel?: amqp.Channel;
