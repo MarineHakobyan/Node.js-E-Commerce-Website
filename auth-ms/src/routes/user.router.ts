@@ -1,4 +1,4 @@
-import express, { Request, Response } from 'express';
+import express, { Response } from 'express';
 import {handleAsync, transformResponseBody} from '../common/helpers';
 import { UserController } from '../controllers/user.controller';
 import { jwtValidator } from '../middleware/jwtValidator';
@@ -6,7 +6,6 @@ import { UserUpdateOptionalDataDto } from '../dtos';
 import {
   TRequestWithToken,
   TUpdateUserRequest,
-  TUserTokenDecoded,
 } from '../common/types/user.types';
 import { validateRequest } from '../middleware/validateInput';
 import { userUpdateOptionalSchema, userUpdateAllSchema } from '../schemas';
@@ -36,7 +35,6 @@ UserRouter.put(
       req.user.userId,
       req.body,
     );
-
     const data = transformResponseBody(UserOutputDto, updatedUser)
 
     res

@@ -33,6 +33,8 @@
     "nodemon": "^2.0.15",
     "pg": "^8.7.1",
     "reflect-metadata": "^0.1.13",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.0",
     "typeorm": "0.2.41",
     "typeorm-naming-strategies": "^2.0.0",
     "uuid": "^9.0.1",

@@ -5,7 +5,7 @@ import {handleAsync, transformResponseBody} from '../common/helpers';
 import { AuthController } from '../controllers/authController';
 import { LoginDto, UserRegistrationDto } from '../dtos/user.input.dto';
 import {
-  userRegistrationSchema,
+  registrationSchema,
   loginSchema,
   updatePasswordSchema,
 } from '../schemas';
@@ -20,7 +20,7 @@ const AuthRouter = express.Router();
 
 AuthRouter.post(
   '/auth/register',
-  validateRequest(userRegistrationSchema),
+  validateRequest(registrationSchema),
   handleAsync(async (req: Request, res: Response, next: NextFunction) => {
     const data = req.body as UserRegistrationDto;
     const result = await authController.register(data);
