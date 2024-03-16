@@ -46,9 +46,10 @@ export class ProductService {
     }
   }
 
-  async addToCart(userId: number, productId: number) {
+  async addToCart(userId: number, productId: number): Promise<Cart> {
     try {
       const cartItem = await this.getCartItem(userId, productId);
+      console.log({cartItem, userId, productId})
 
       if (cartItem) {
         await this.cartRepository
@@ -59,20 +60,31 @@ export class ProductService {
           .andWhere('productId = :productId', { productId })
           .execute();
 
-        return this.cartRepository.findOne({ userId, productId });
+        const newCartItem =await this.cartRepository.findOne({ userId, productId });
+
+        if(!newCartItem) {
+          throw new Error('Cart item not saved')
+        }
+
+        return newCartItem;
       }
 
       return this.cartRepository.save({ userId, productId });
     } catch (err) {
+      console.log(err)
       throw new Error('Failed to add the item to cart');
     }
   }
 
   async removeFromCart(userId: number, productId: number) {
     try {
-      await this.cartRepository.delete({ userId, productId });
+      const result = await this.cartRepository.delete({ userId, productId });
+
+      if(!result.affected) {
+        throw new Error('Cart item not found')
+      }
     } catch (err) {
-      throw new Error('failed to remove the item');
+      throw new Error('Failed to remove the item');
     }
   }
 
@@ -95,7 +107,7 @@ export class ProductService {
         .leftJoinAndSelect('cart.product', 'product')
         .where('cart.userId = :userId', { userId })
         .andWhere('product.id = :productId', { productId })
-        .getMany();
+        .getOne();
     } catch (err) {
       throw new Error('Failed to get cart item');
     }

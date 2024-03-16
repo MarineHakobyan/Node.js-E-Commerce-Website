@@ -46,24 +46,25 @@ ProductRouter.get(
 );
 
 ProductRouter.post(
-  // here
-  '/cart',
-  validateRequest(addToCartSchema),
-  jwtValidator,
+  '/cart/:id',
+parseProductIdParam,
+    jwtValidator,
   async (req: TReqWithProductId, res: Response, next: NextFunction) => {
     try {
+        console.log(req.body)
       const userId = req.user.userId;
       const products = await productController.addToCart(userId, req.productId);
 
-      res.json(products);
+      res.send(products);
     } catch (error) {
+        console.log(error)
       next(error);
     }
   },
 );
 
 ProductRouter.get(
-  '/cart', // here
+  '/cart/',
   jwtValidator,
   async (req: TRequestWithToken, res: Response, next: NextFunction) => {
     try {
@@ -78,8 +79,7 @@ ProductRouter.get(
 );
 
 ProductRouter.delete(
-  // here
-  '/cart',
+  '/cart/:id',
   jwtValidator,
   parseProductIdParam,
   async (req: TReqWithProductId, res: Response, next: NextFunction) => {
@@ -87,7 +87,7 @@ ProductRouter.delete(
       const userId = req.user.userId;
       await productController.deleteFromCart(userId, req.productId);
 
-      res.json(200).send({ message: 'Item removed from cart' });
+      res.status(200).send({ message: 'Item removed from cart' });
     } catch (error) {
       next(error);
     }
@@ -95,7 +95,7 @@ ProductRouter.delete(
 );
 
 ProductRouter.get(
-  '/products/:id', // here
+  '/products/:id',
   jwtValidator,
   parseProductIdParam,
   async (req: TReqWithProductId, res: Response, next: NextFunction) => {
@@ -132,7 +132,7 @@ ProductRouter.put(
       if (product) {
         res.json(product);
       } else {
-        res.status(404).json({ message: 'ProductEntity not found' });
+        res.status(404).json({ message: 'Product not found' });
       }
     } catch (error) {
       next(error);
@@ -147,7 +147,7 @@ ProductRouter.delete(
   async (req: TReqWithProductId, res: Response, next: NextFunction) => {
     await productController.deleteProduct(req.user.userId, req.productId);
 
-    res.json({ message: 'ProductEntity deleted' });
+    res.json({ message: 'Product deleted' });
   },
 );
 

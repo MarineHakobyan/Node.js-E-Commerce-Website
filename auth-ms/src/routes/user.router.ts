@@ -51,7 +51,7 @@ UserRouter.patch(
 
     await userController.updateOne(userId, data);
 
-    return res.status(200).send('UserEntity Updated');
+    return res.status(200).send({message:'UserEntity Updated'});
   }),
 );
 
@@ -64,7 +64,7 @@ UserRouter.delete(
     const isDeleted = await userController.deleteOne(userId);
 
     if (isDeleted) {
-      res.status(200).send('UserEntity deleted');
+      res.status(200).send({message:'UserEntity deleted'});
     }
 
     throw new Error('Failed to delete');
