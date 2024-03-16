@@ -9,8 +9,8 @@ import {
 } from '../common/types/product.types';
 import { validateRequest } from '../middleware/validateInput';
 import { createProductSchema } from '../schemas/createProduct.schema';
-import { TRequestWithToken } from '../common/types/user.types';
-import { addToCartSchema } from '../schemas/addToCart.schema';
+import {transformResponseBody} from "../common/helpers";
+import {ProductOutputDto} from "../dtos";
 
 const productController = new ProductController();
 
@@ -25,7 +25,7 @@ ProductRouter.post(
       const userId = req.user.userId;
       const product = await productController.createProduct(userId, req.body);
 
-      res.json(product);
+      res.json(transformResponseBody(ProductOutputDto, product));
     } catch (error) {
       next(error);
     }
@@ -38,117 +38,71 @@ ProductRouter.get(
     try {
       const products = await productController.getAllProducts();
 
-      res.json(products);
+      res.json(transformResponseBody(ProductOutputDto, products));
     } catch (error) {
       next(error);
     }
   },
 );
 
-ProductRouter.post(
-  '/cart/:id',
-parseProductIdParam,
+
+ProductRouter.get(
+    '/products/:id',
     jwtValidator,
-  async (req: TReqWithProductId, res: Response, next: NextFunction) => {
-    try {
-        console.log(req.body)
-      const userId = req.user.userId;
-      const products = await productController.addToCart(userId, req.productId);
+    parseProductIdParam,
+    async (req: TReqWithProductId, res: Response, next: NextFunction) => {
+        try {
+            const userId = req.user.userId;
+            const productId = req.productId;
+            const product = await productController.getOne(productId, userId);
 
-      res.send(products);
-    } catch (error) {
-        console.log(error)
-      next(error);
-    }
-  },
-);
-
-ProductRouter.get(
-  '/cart/',
-  jwtValidator,
-  async (req: TRequestWithToken, res: Response, next: NextFunction) => {
-    try {
-      const userId = req.user.userId;
-      const products = await productController.getCart(userId);
-
-      res.json(products);
-    } catch (error) {
-      next(error);
-    }
-  },
-);
-
-ProductRouter.delete(
-  '/cart/:id',
-  jwtValidator,
-  parseProductIdParam,
-  async (req: TReqWithProductId, res: Response, next: NextFunction) => {
-    try {
-      const userId = req.user.userId;
-      await productController.deleteFromCart(userId, req.productId);
-
-      res.status(200).send({ message: 'Item removed from cart' });
-    } catch (error) {
-      next(error);
-    }
-  },
-);
-
-ProductRouter.get(
-  '/products/:id',
-  jwtValidator,
-  parseProductIdParam,
-  async (req: TReqWithProductId, res: Response, next: NextFunction) => {
-    try {
-      const userId = req.user.userId;
-      const productId = req.productId;
-      const products = await productController.getOne(productId, userId);
-
-      res.send(products);
-    } catch (error) {
-      next(error);
-    }
-  },
+            res.send(transformResponseBody(ProductOutputDto, product));
+        } catch (error) {
+            next(error);
+        }
+    },
 );
 
 ProductRouter.put(
-  '/products/:id',
-  jwtValidator,
-  parseProductIdParam,
-  validateRequest(createProductSchema),
-  async (
-    req: TReqWithProductPayloadAndId,
-    res: Response,
-    next: NextFunction,
-  ) => {
-    const { productId, body } = req;
-    try {
-      const product = await productController.updateProduct(
-        req.user.userId,
-        productId,
-        body,
-      );
+    '/products/:id',
+    jwtValidator,
+    parseProductIdParam,
+    validateRequest(createProductSchema),
+    async (
+        req: TReqWithProductPayloadAndId,
+        res: Response,
+        next: NextFunction,
+    ) => {
+        const { productId, body } = req;
+        try {
+            const product = await productController.updateProduct(
+                req.user.userId,
+                productId,
+                body,
+            );
 
-      if (product) {
-        res.json(product);
-      } else {
-        res.status(404).json({ message: 'Product not found' });
-      }
-    } catch (error) {
-      next(error);
-    }
-  },
+            if (product) {
+                res.json(product);
+            } else {
+                res.status(404).json({ message: 'Product not found' });
+            }
+        } catch (error) {
+            next(error);
+        }
+    },
 );
 
 ProductRouter.delete(
-  '/products/:id',
-  jwtValidator,
-  parseProductIdParam,
-  async (req: TReqWithProductId, res: Response, next: NextFunction) => {
-    await productController.deleteProduct(req.user.userId, req.productId);
+    '/products/:id',
+    jwtValidator,
+    parseProductIdParam,
+    async (req: TReqWithProductId, res: Response, next: NextFunction) => {
+        await productController.deleteProduct(req.user.userId, req.productId);
 
-    res.json({ message: 'Product deleted' });
-  },
+        res.json({ message: 'Product deleted' });
+    },
 );
 
 export { ProductRouter };
+
+

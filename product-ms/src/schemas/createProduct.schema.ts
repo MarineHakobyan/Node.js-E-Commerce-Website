@@ -1,7 +1,8 @@
 import Joi from 'joi';
 import { CategoryEnum } from '../common/enums/productCategory.enum';
+import { ProductInputDto } from '../dtos/product.input.dto';
 
-export const createProductSchema = Joi.object({
+export const createProductSchema = Joi.object<ProductInputDto>({
   title: Joi.string().min(3).max(50).required(),
   description: Joi.string().min(10).required(),
   category: Joi.string()

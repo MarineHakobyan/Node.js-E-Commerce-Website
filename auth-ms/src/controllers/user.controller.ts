@@ -6,7 +6,7 @@ import { UserOutputDto } from '../dtos/user.output.dto';
 export class UserController {
   private userService = new UserService();
 
-  async getOne(id: number): Promise<Omit<User, 'password'>> {
+  async getOne(id: number): Promise<UserOutputDto> {
     try {
       const user = await this.userService.getOne(id);
 

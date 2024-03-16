@@ -6,6 +6,7 @@ import { LoginDto } from '../dtos';
 import { generateToken } from '../utils/authUtils';
 import { dbConfig } from '../config';
 import { UserOutputDto } from '../dtos/user.output.dto';
+import {UserLoginOutputDto} from "../dtos/user.login.output.dto";
 
 export class AuthService {
   private userRepository: Repository<User>;
@@ -21,7 +22,7 @@ export class AuthService {
     })();
   }
 
-  async register(userData: any): Promise<Omit<User, 'password'>> {
+  async register(userData: any): Promise<UserOutputDto> {
     try {
       const existingUser = await this.userRepository.findOne({
         where: { email: userData.email },
@@ -48,7 +49,7 @@ export class AuthService {
     }
   }
 
-  async login(loginData: LoginDto): Promise<UserOutputDto> {
+  async login(loginData: LoginDto): Promise<UserLoginOutputDto> {
     try {
       const x = await this.userRepository.find();
       const user = await this.userRepository.findOne({
@@ -70,12 +71,7 @@ export class AuthService {
 
       const token = generateToken(user.id);
 
-      const { password, ...data } = user;
-
-      return {
-        ...data,
-        token,
-      };
+      return {token};
     } catch (error) {
       console.error(error);
       if (error.message === 'Invalid login or password') {

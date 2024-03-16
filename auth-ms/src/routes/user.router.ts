@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import { handleAsync } from '../common/helpers';
+import {handleAsync, transformResponseBody} from '../common/helpers';
 import { UserController } from '../controllers/user.controller';
 import { jwtValidator } from '../middleware/jwtValidator';
 import { UserUpdateOptionalDataDto } from '../dtos';
@@ -10,6 +10,7 @@ import {
 } from '../common/types/user.types';
 import { validateRequest } from '../middleware/validateInput';
 import { userUpdateOptionalSchema, userUpdateAllSchema } from '../schemas';
+import {UserOutputDto} from "../dtos/user.output.dto";
 
 const userController = new UserController();
 const UserRouter = express.Router();
@@ -20,8 +21,9 @@ UserRouter.get(
   handleAsync(async (req: TRequestWithToken, res: Response) => {
     const userId = req.user.userId;
     const user = await userController.getOne(userId);
+    const data = transformResponseBody(UserOutputDto, user)
 
-    res.send(user);
+    res.send({data});
   }),
 );
 
@@ -35,9 +37,11 @@ UserRouter.put(
       req.body,
     );
 
+    const data = transformResponseBody(UserOutputDto, updatedUser)
+
     res
       .status(200)
-      .json({ message: 'UserEntity updated successfully', user: updatedUser });
+      .json({ data, message: 'UserEntity updated successfully' });
   }),
 );
 
@@ -46,12 +50,13 @@ UserRouter.patch(
   jwtValidator,
   validateRequest(userUpdateOptionalSchema),
   handleAsync(async (req: TRequestWithToken, res: Response) => {
-    const data = req.body as UserUpdateOptionalDataDto;
+    const payload = req.body as UserUpdateOptionalDataDto;
     const userId = req.user.userId;
 
-    await userController.updateOne(userId, data);
+    const updatedUser = await userController.updateOne(userId, payload);
+    const data = transformResponseBody(UserOutputDto, updatedUser)
 
-    return res.status(200).send({message:'UserEntity Updated'});
+    return res.status(200).send({ data, message:'UserEntity Updated'});
   }),
 );
 

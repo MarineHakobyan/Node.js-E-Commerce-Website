@@ -23,22 +23,14 @@ export class ProductController {
     return products;
   }
 
-  async addToCart(userId: number, productId: number) {
-    return this.productService.addToCart(userId, productId);
-  }
+  async getOne(productId: number, userId: number):Promise<Product> {
+    const product = await this.productService.getOne(productId);
 
-  async getCart(userId: number) {
-    return this.productService.getCart(userId);
-  }
+    if(!product){
+      throw new Error('Product not found')
+    }
 
-  async deleteFromCart(userId: number, productId: number) {
-    return this.productService.removeFromCart(userId, productId);
-  }
-
-  async getOne(productId: number, userId: number) {
-    const products = await this.productService.getOne(productId);
-
-    return products;
+    return product;
   }
 
   async updateProduct(userId: number, productId: number, productData: any) {

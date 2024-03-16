@@ -2,8 +2,8 @@ import { comparePassword } from '../utils/authUtils';
 import { LoginDto, UserRegistrationDto } from '../dtos';
 import { AuthService } from '../services/auth.service';
 import { UserService } from '../services/user.service';
-import { User } from '../orm/entities/user.entity';
 import { UserOutputDto } from '../dtos/user.output.dto';
+import {UserLoginOutputDto} from "../dtos/user.login.output.dto";
 
 const authService = new AuthService();
 const userService = new UserService();
@@ -13,7 +13,7 @@ export class AuthController {
     return authService.register(data);
   }
 
-  async login(user: LoginDto) {
+  async login(user: LoginDto) :Promise<UserLoginOutputDto> {
     return authService.login(user);
   }
 

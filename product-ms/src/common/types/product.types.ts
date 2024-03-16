@@ -11,3 +11,5 @@ export type TReqWithProductPayload =  {
 }
 
 export type TReqWithProductPayloadAndId = TReqWithProductId & TReqWithProductPayload
+
+export type DTOData<T> = { data: T | T[] };

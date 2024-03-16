@@ -1,11 +1,10 @@
 import express, { Request, Response, NextFunction } from 'express';
 import dotenv from 'dotenv';
-
 dotenv.config();
 require('express-async-errors');
 
 import logger from './logger';
-import {  ProductRouter } from './routes';
+import {CartRouter, ProductRouter} from './routes';
 import { errorHandler } from './error-handler';
 import { appConfig } from './config';
 
@@ -15,6 +14,7 @@ app.use(express.json());
 
 
 app.use(ProductRouter);
+app.use(CartRouter);
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     errorHandler(err, req, res, next);
