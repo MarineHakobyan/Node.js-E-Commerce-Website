@@ -1,11 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
 import { ObjectLiteral } from 'typeorm';
-import {DTOData} from "./types/product.types";
+import { DTOData } from './types/product.types';
 
 export const handleAsync =
   (fn: Function) =>
   (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    return Promise.resolve(fn(req, res, next)).catch(next);
+    return fn(req, res, next).catch(next);
   };
 
 const transformToDTO = <T extends ObjectLiteral, U extends ObjectLiteral>(

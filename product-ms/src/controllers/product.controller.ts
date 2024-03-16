@@ -23,11 +23,11 @@ export class ProductController {
     return products;
   }
 
-  async getOne(productId: number, userId: number):Promise<Product> {
+  async getOne(productId: number, userId: number): Promise<Product> {
     const product = await this.productService.getOne(productId);
 
-    if(!product){
-      throw new Error('Product not found')
+    if (!product) {
+      throw new Error('Product not found');
     }
 
     return product;

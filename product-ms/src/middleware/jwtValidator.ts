@@ -10,7 +10,7 @@ export const jwtValidator = (
   const token = req.header('Authorization')?.replace('Bearer ', '');
 
   if (!token) {
-    return res.status(401).json({ message: 'Unauthorized - Missing token' });
+    return res.status(401).send({ message: 'Unauthorized - Missing token' });
   }
 
   try {
@@ -19,7 +19,7 @@ export const jwtValidator = (
 
     next();
   } catch (error) {
-    return res.status(401).json({
+    return res.status(401).send({
       message: 'Unauthorized - Invalid token',
     });
   }

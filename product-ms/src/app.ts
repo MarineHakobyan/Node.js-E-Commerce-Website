@@ -8,7 +8,6 @@ import {CartRouter, ProductRouter} from './routes';
 import { errorHandler } from './error-handler';
 import { appConfig } from './config';
 
-
 const app = express();
 app.use(express.json());
 

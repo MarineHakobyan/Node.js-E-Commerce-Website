@@ -9,8 +9,9 @@ import {
 } from '../common/types/product.types';
 import { validateRequest } from '../middleware/validateInput';
 import { createProductSchema } from '../schemas/createProduct.schema';
-import {transformResponseBody} from "../common/helpers";
-import {ProductOutputDto} from "../dtos";
+import { transformResponseBody } from '../common/helpers';
+import { ProductOutputDto } from '../dtos';
+import { handleAsync } from '../common/helpers';
 
 const productController = new ProductController();
 
@@ -20,89 +21,80 @@ ProductRouter.post(
   '/products',
   jwtValidator,
   validateRequest(createProductSchema),
-  async (req: TReqWithProductId, res: Response, next: NextFunction) => {
-    try {
+  handleAsync(
+    async (req: TReqWithProductId, res: Response, next: NextFunction) => {
       const userId = req.user.userId;
       const product = await productController.createProduct(userId, req.body);
 
-      res.json(transformResponseBody(ProductOutputDto, product));
-    } catch (error) {
-      next(error);
-    }
-  },
+      res.status(200).send(transformResponseBody(ProductOutputDto, product));
+    },
+  ),
 );
 
 ProductRouter.get(
   '/products',
-  async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const products = await productController.getAllProducts();
+  handleAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const products = await productController.getAllProducts();
 
-      res.json(transformResponseBody(ProductOutputDto, products));
-    } catch (error) {
-      next(error);
-    }
-  },
+    res.status(200).send(transformResponseBody(ProductOutputDto, products));
+  }),
 );
 
-
 ProductRouter.get(
-    '/products/:id',
-    jwtValidator,
-    parseProductIdParam,
+  '/products/:id',
+  jwtValidator,
+  parseProductIdParam,
+  handleAsync(
     async (req: TReqWithProductId, res: Response, next: NextFunction) => {
-        try {
-            const userId = req.user.userId;
-            const productId = req.productId;
-            const product = await productController.getOne(productId, userId);
+      const userId = req.user.userId;
+      const productId = req.productId;
+      const product = await productController.getOne(productId, userId);
 
-            res.send(transformResponseBody(ProductOutputDto, product));
-        } catch (error) {
-            next(error);
-        }
+      res.status(200).send(transformResponseBody(ProductOutputDto, product));
     },
+  ),
 );
 
 ProductRouter.put(
-    '/products/:id',
-    jwtValidator,
-    parseProductIdParam,
-    validateRequest(createProductSchema),
+  '/products/:id',
+  jwtValidator,
+  parseProductIdParam,
+  validateRequest(createProductSchema),
+  handleAsync(
     async (
-        req: TReqWithProductPayloadAndId,
-        res: Response,
-        next: NextFunction,
+      req: TReqWithProductPayloadAndId,
+      res: Response,
+      next: NextFunction,
     ) => {
-        const { productId, body } = req;
-        try {
-            const product = await productController.updateProduct(
-                req.user.userId,
-                productId,
-                body,
-            );
+      const { productId, body } = req;
+      const product = await productController.updateProduct(
+        req.user.userId,
+        productId,
+        body,
+      );
 
-            if (product) {
-                res.json(product);
-            } else {
-                res.status(404).json({ message: 'Product not found' });
-            }
-        } catch (error) {
-            next(error);
-        }
+      if (product) {
+        return res
+          .status(200)
+          .send(transformResponseBody(ProductOutputDto, product));
+      }
+
+      res.status(404).send({ message: 'Product not found' });
     },
+  ),
 );
 
 ProductRouter.delete(
-    '/products/:id',
-    jwtValidator,
-    parseProductIdParam,
+  '/products/:id',
+  jwtValidator,
+  parseProductIdParam,
+  handleAsync(
     async (req: TReqWithProductId, res: Response, next: NextFunction) => {
-        await productController.deleteProduct(req.user.userId, req.productId);
+      await productController.deleteProduct(req.user.userId, req.productId);
 
-        res.json({ message: 'Product deleted' });
+      res.status(204).send({ message: 'Product deleted' });
     },
+  ),
 );
 
 export { ProductRouter };
-
-

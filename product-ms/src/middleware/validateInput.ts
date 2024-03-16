@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import * as Joi from 'joi';
+import Joi from 'joi';
 
 export const validateRequest = (schema: Joi.ObjectSchema) => {
   return async (req: Request, res: Response, next: NextFunction) => {
@@ -11,7 +11,7 @@ export const validateRequest = (schema: Joi.ObjectSchema) => {
       if (error) {
         res
           .status(400)
-          .json({ error: 'Validation failed', details: error.details });
+          .send({ error: 'Validation failed', details: error.details });
       }
 
       next();
