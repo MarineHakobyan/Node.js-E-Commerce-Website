@@ -1,4 +1,5 @@
 import express, { Response } from 'express';
+
 import {handleAsync, transformResponseBody} from '../common/helpers';
 import { UserController } from '../controllers/user.controller';
 import { jwtValidator } from '../middleware/jwtValidator';
@@ -22,7 +23,7 @@ UserRouter.get(
     const user = await userController.getOne(userId);
     const data = transformResponseBody(UserOutputDto, user)
 
-    res.send({data});
+    res.status(200).send({data});
   }),
 );
 
@@ -39,7 +40,7 @@ UserRouter.put(
 
     res
       .status(200)
-      .json({ data, message: 'UserEntity updated successfully' });
+      .send({ data, message: 'UserEntity updated successfully' });
   }),
 );
 

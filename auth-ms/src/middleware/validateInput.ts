@@ -11,7 +11,7 @@ export const validateRequest = (schema: Joi.ObjectSchema) => {
       if (error) {
         res
           .status(400)
-          .json({ error: 'Validation failed', details: error.details });
+          .send({ error: 'Validation failed', details: error.details });
       } else {
         req.body = value;
 
